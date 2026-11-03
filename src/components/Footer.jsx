@@ -1,34 +1,39 @@
-import { Link, useLocation } from 'react-router-dom';
-import { FiHeart } from 'react-icons/fi';
-import { SiBilibili } from 'react-icons/si';
+import { Link, useLocation } from 'react-router-dom'
+import { SiBilibili } from 'react-icons/si'
+import PixelIcon from './ui/PixelIcon'
 
 export default function Footer() {
-  const { pathname } = useLocation();
-  const currentYear = new Date().getFullYear();
+  const { pathname } = useLocation()
+  const year = new Date().getFullYear()
 
   return (
-    <footer className="relative py-8 px-6 z-10 border-t border-neutral-200/30 dark:border-white/5 glass-effect">
-      <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm">
-        <div className="flex items-center gap-3">
-          <span className="font-mono gradient-text font-bold text-sm">天真SkyerNovie</span>
-          <span className="text-xs text-neutral-400 dark:text-neutral-400">
-            &copy; {currentYear} · Made with <FiHeart className="inline text-rose-400" size={12} />
-          </span>
+    <footer className="relative z-10 border-t border-line/10 px-5 py-7">
+      <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 text-[12.5px] text-muted sm:flex-row">
+        <div className="flex items-center gap-2">
+          <PixelIcon name="grass" size={13} />
+          <span className="font-semibold text-ink">天真SkyerNovie</span>
+          <span aria-hidden="true">·</span>
+          <span>© {year} Minecraft 模组实况</span>
         </div>
 
-        <div className="flex items-center gap-5">
-          {pathname !== '/' && <Link to="/" className="btn-glass text-xs py-1.5 px-3 font-medium">回主页</Link>}
+        <div className="flex items-center gap-4">
+          {pathname !== '/' && (
+            <Link to="/" className="transition-colors hover:text-accent">
+              回主页
+            </Link>
+          )}
           <a
             href="https://space.bilibili.com/25770857"
             target="_blank"
             rel="noopener noreferrer"
-            title="Bilibili 空间"
-            className="w-9 h-9 rounded-xl glass-effect flex items-center justify-center text-neutral-500 hover:text-indigo-500 hover:scale-110 transition-all"
+            title="B 站空间"
+            aria-label="前往 B 站空间"
+            className="grid h-8 w-8 place-items-center rounded-[9px] border border-line/10 text-muted transition-colors hover:border-bili/40 hover:text-bili"
           >
-            <SiBilibili size={18} />
+            <SiBilibili size={16} aria-hidden="true" />
           </a>
         </div>
       </div>
     </footer>
-  );
+  )
 }

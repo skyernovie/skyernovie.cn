@@ -10,7 +10,7 @@ function Ridge() {
       aria-hidden="true"
       viewBox="0 0 800 120"
       preserveAspectRatio="none"
-      className="pointer-events-none absolute inset-x-0 bottom-0 h-24 w-full text-accent opacity-[0.07] dark:opacity-[0.13]"
+      className="pointer-events-none absolute inset-x-0 bottom-0 h-24 w-full text-accent opacity-[0.06] [mask-image:linear-gradient(to_top,#000_40%,transparent)] dark:opacity-[0.09]"
     >
       <path
         d="M0 120V86H48V70H96V86H144V58H192V86H240V72H288V90H336V62H384V88H432V74H480V92H528V66H576V86H624V72H672V92H720V70H768V88H800V120Z"
@@ -65,8 +65,7 @@ export default function Hero() {
 
               <p className="mt-3 text-[15px] leading-relaxed text-muted">
                 {profile.tagline}
-                <br className="hidden sm:block" />
-                <span className="text-[13px] opacity-80">{profile.note}</span>
+                <span className="mt-1 block text-[13px] opacity-80">{profile.note}</span>
               </p>
 
               <div className="mt-6 flex flex-wrap items-center justify-center gap-2.5 sm:justify-start">

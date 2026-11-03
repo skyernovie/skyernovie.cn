@@ -74,15 +74,24 @@ export default function Community() {
                   </button>
                 )}
 
-                {item.action && (
-                  <Button
-                    href={item.action.url}
-                    variant={item.state === 'open' ? 'primary' : 'secondary'}
-                    size="sm"
-                    className="ml-auto"
+                {item.state === 'full' ? (
+                  <span
+                    className="btn btn-ghost btn-sm ml-auto cursor-not-allowed opacity-60"
+                    aria-disabled="true"
                   >
-                    {item.action.label}
-                  </Button>
+                    已满员
+                  </span>
+                ) : (
+                  item.url && (
+                    <Button
+                      href={item.url}
+                      variant={item.state === 'open' ? 'primary' : 'secondary'}
+                      size="sm"
+                      className="ml-auto"
+                    >
+                      {item.action}
+                    </Button>
+                  )
                 )}
               </div>
             </div>

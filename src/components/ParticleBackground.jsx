@@ -74,8 +74,9 @@ export default function ParticleBackground() {
 
     applySize();
 
-    // 粒子数量按面积算，手机等窄屏不再塞过多粒子
-    const count = Math.min(Math.round((width * height) / 22000), 90);
+    // 粒子数量按面积算，手机等窄屏再降一档，避免小屏耗电
+    const coarse = window.matchMedia?.('(pointer: coarse)').matches;
+    const count = coarse ? 30 : Math.min(Math.round((width * height) / 22000), 90);
     particlesRef.current = Array.from({ length: count }, () => new Particle(width, height));
 
     const draw = () => {
@@ -86,7 +87,7 @@ export default function ParticleBackground() {
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i];
         p.update(width, height);
-        ctx.fillStyle = `rgba(99, 102, 241, ${p.opacity * particleAlpha})`;
+        ctx.fillStyle = `rgba(95, 208, 104, ${p.opacity * particleAlpha})`;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fill();
@@ -99,7 +100,7 @@ export default function ParticleBackground() {
           const distSq = dx * dx + dy * dy;
           if (distSq < LINK_DISTANCE_SQ) {
             const dist = Math.sqrt(distSq);
-            ctx.strokeStyle = `rgba(99, 102, 241, ${lineAlpha * (1 - dist / LINK_DISTANCE)})`;
+            ctx.strokeStyle = `rgba(79, 224, 208, ${lineAlpha * (1 - dist / LINK_DISTANCE)})`;
             ctx.lineWidth = 0.5;
             ctx.beginPath();
             ctx.moveTo(p.x, p.y);
