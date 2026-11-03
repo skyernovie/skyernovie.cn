@@ -9,7 +9,7 @@ import statsData from './stats.json'
 
 const FAN_COUNT = statsData.follower
 const FAN_TEXT = FAN_COUNT >= 10000 ? `${(FAN_COUNT / 10000).toFixed(2)}万` : FAN_COUNT.toLocaleString('en-US')
-const FAN_TITLE = `${FAN_COUNT.toLocaleString('en-US')} 位粉丝${statsData.updatedAt ? `（更新于 ${statsData.updatedAt}）` : ''}`
+const FAN_UPDATED = statsData.updatedAt ? `，更新于 ${statsData.updatedAt}` : ''
 
 export const profile = {
   name: '天真SkyerNovie',
@@ -25,10 +25,38 @@ export const profile = {
   ],
 }
 
+/*
+ * 「3 天 / 期」的说明：这句话是主播自己在直播间说的，跟站长无关。
+ * 站长只是听信了谗言、照搬了口头承诺。经核对，主播自己的 B 站简介写的是
+ * 「视频 3–4 天更新」，前后口径本就不一致——真要追责，请批判主播。
+ */
+export const statsNote =
+  '※「3 天 / 期」为主播本人在直播间所述，与本站站长无任何关系，站长只是听信了谗言。' +
+  '经核对，主播自己的 B 站简介写的是「视频 3–4 天更新」，口径前后并不一致；' +
+  '若实际更新节奏与该说法不符，请批判主播，别批判站长。'
+
 export const stats = [
-  { key: 'fans', icon: 'grass', value: FAN_TEXT, label: 'B站粉丝', title: FAN_TITLE, compact: false },
+  {
+    key: 'fans',
+    icon: 'grass',
+    value: FAN_TEXT,
+    label: 'B站粉丝',
+    compact: false,
+    tipTitle: '数据说明',
+    tipTone: 'accent',
+    tip: `粉丝数为 ${FAN_COUNT.toLocaleString('en-US')}${FAN_UPDATED}。该数字不是实时更新的，只在每次部署时从 B 站（哔哩哔哩）抓取一次快照，也只同步哔哩哔哩这一侧的数据。`,
+  },
   { key: 'series', icon: 'diamond', value: '《格雷空岛》', label: '主要系列', compact: true },
-  { key: 'rate', icon: 'gold', value: '3 天 / 期', label: '更新频率', compact: false },
+  {
+    key: 'rate',
+    icon: 'gold',
+    value: '3 天 / 期',
+    label: '更新频率',
+    compact: false,
+    tipTitle: '重点提示',
+    tipTone: 'gold',
+    tip: statsNote,
+  },
   { key: 'field', icon: 'redstone', value: '整合包实况', label: '核心领域', compact: true },
 ]
 
