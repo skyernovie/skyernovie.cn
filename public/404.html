@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>天真SkyerNovie</title>
+  <script>
+    // GitHub Pages SPA redirect
+    // 任意深链接（如 /tz）先跳到 /?path=...，再由 index.html 顶部的脚本还原真实路径
+    (function(l) {
+      var p = l.pathname;
+      if (p !== '/') {
+        l.replace('/?path=' + encodeURIComponent(p + l.search + l.hash));
+      }
+    })(window.location);
+  </script>
+</head>
+<body>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="64x64" href="/images/favicon-64.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#6366f1" />
+    <!-- 自托管字体（保底：加载失败自动回落系统字体，font-display: swap 不阻塞渲染） -->
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/Geist-Variable.woff2" crossorigin>
+    <title>天真SkyerNovie - 个人主页</title>
+    <meta name="description" content="天真SkyerNovie 的个人主页 - Minecraft 游戏视频创作者，整合包推荐，粉丝社区互动。" />
+    <meta name="keywords" content="天真SkyerNovie, Minecraft, 游戏主播, 整合包, 模组, B站" />
+    <meta name="author" content="天真SkyerNovie" />
+    <meta name="robots" content="index, follow" />
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="天真SkyerNovie" />
+    <meta property="og:title" content="天真SkyerNovie - 个人主页" />
+    <meta property="og:description" content="Minecraft 游戏视频创作者，整合包推荐，粉丝社区互动" />
+    <meta property="og:image" content="https://skyernovie.cn/images/avatar.webp" />
+    <meta property="og:url" content="https://skyernovie.cn/" />
+    <meta property="og:locale" content="zh_CN" />
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="天真SkyerNovie - 个人主页" />
+    <meta name="twitter:description" content="Minecraft 游戏视频创作者，整合包推荐，粉丝社区互动" />
+    <meta name="twitter:image" content="https://skyernovie.cn/images/avatar.webp" />
+  </head>
+  <body class="antialiased transition-colors duration-300">
+    <script>
+      (function() {
+        var theme = localStorage.getItem('theme');
+        var isDark = theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        if (isDark) document.documentElement.classList.add('dark');
+      })();
+    </script>
+    <!-- SPA path recovery: restores the original path from 404.html redirect -->
+    <script>
+      (function(l) {
+        var params = new URLSearchParams(l.search);
+        var path = params.get('path');
+        if (path) {
+          window.history.replaceState(null, null, path);
+        }
+      })(window.location);
+    </script>
+    <div id="root"></div>
+    <!-- 保底：未开启 JavaScript 时给出一句可读的说明，而不是一片空白 -->
+    <noscript>
+      <div style="max-width:32rem;margin:15vh auto;padding:1.5rem;font-family:system-ui,-apple-system,'Segoe UI','Microsoft YaHei',sans-serif;line-height:1.7;color:#334155;text-align:center">
+        <h1 style="font-size:1.25rem;margin-bottom:.75rem">需要开启 JavaScript</h1>
+        <p style="font-size:.9rem">本站是单页应用，页面内容由浏览器端渲染。请在浏览器设置中开启 JavaScript 后刷新页面。</p>
+        <p style="font-size:.9rem;margin-top:.75rem">也可以直接访问我的
+          <a href="https://space.bilibili.com/25770857" style="color:#6366f1">Bilibili</a> 空间。
+        </p>
+      </div>
+    </noscript>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

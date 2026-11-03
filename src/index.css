@@ -1,0 +1,500 @@
+/*
+ * 字体：自托管 Geist / Geist Mono（Vercel，SIL OFL 1.1）
+ * 保底策略：不再依赖 fonts.googleapis.com（国内经常不可达且会阻塞渲染）。
+ * 文件放在 public/fonts/，随站点一起发布；font-display: swap 保证字体没下完时先用系统字体渲染文字，
+ * 字体加载失败也只是回落到系统字体，不会白屏、不会有不可见文字。
+ */
+@font-face {
+  font-family: 'Geist';
+  src: url('/fonts/Geist-Variable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Geist Mono';
+  src: url('/fonts/GeistMono-Variable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-15px); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.3); }
+  50% { box-shadow: 0 0 40px rgba(99, 102, 241, 0.6); }
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes rotate-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes hover-lift {
+  0% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-4px) scale(1.02); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+@keyframes ripple {
+  0% { transform: scale(0); opacity: 1; }
+  100% { transform: scale(4); opacity: 0; }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+@layer base {
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 100px; scrollbar-width: none; -ms-overflow-style: none; }
+  body {
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 30%, #f8fafc 60%, #f1f5f9 100%);
+    color: #1e293b;
+    /* 保底：Geist 没加载出来（或被墙/被拦截）时，逐级回落到系统字体，文字始终可读 */
+    font-family: 'Geist', system-ui, -apple-system, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    transition: background 0.6s ease, color 0.4s ease;
+    min-height: 100vh;
+  }
+  .dark body {
+    background: linear-gradient(180deg, #0f172a 0%, #1e293b 30%, #0f172a 60%, #1e293b 100%);
+    color: #f1f5f9;
+  }
+  /*
+   * 全站统一的页面底色。之前各子页面各写一份渐变（有的干脆没有），
+   * 导致同一个站在不同路由下底色不一致；这里收敛成一处，浅色/深色都由它负责。
+   */
+  .page-backdrop {
+    background: linear-gradient(135deg, #f8fafc 0%, #ffffff 50%, rgba(239, 246, 255, 0.3) 100%);
+    transition: background 0.6s ease;
+  }
+  .dark .page-backdrop {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, rgba(49, 46, 129, 0.2) 100%);
+  }
+  ::-webkit-scrollbar { display: none; }
+}
+
+@layer components {
+  .glass-effect {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(14px) saturate(170%);
+    -webkit-backdrop-filter: blur(14px) saturate(170%);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.06),
+      inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .glass-effect:hover {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: rgba(99, 102, 241, 0.3);
+    box-shadow:
+      0 20px 60px rgba(99, 102, 241, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 1);
+  }
+  .dark .glass-effect {
+    background: rgba(30, 41, 59, 0.65);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.25),
+      inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  }
+  .dark .glass-effect:hover {
+    background: rgba(30, 41, 59, 0.9);
+    border-color: rgba(139, 92, 246, 0.3);
+    box-shadow:
+      0 20px 60px rgba(139, 92, 246, 0.18),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+
+  .glass-card {
+    @apply glass-effect rounded-2xl p-6;
+  }
+  .glass-card-sm {
+    @apply glass-effect rounded-xl p-4;
+  }
+
+  .liquid-glass-light {
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(12px) saturate(160%);
+    -webkit-backdrop-filter: blur(12px) saturate(160%);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .liquid-glass-light:hover {
+    background: rgba(255, 255, 255, 0.85);
+    border-color: rgba(99, 102, 241, 0.2);
+    box-shadow: 0 12px 40px rgba(99, 102, 241, 0.1);
+  }
+  .dark .liquid-glass-light {
+    background: rgba(30, 41, 59, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+  }
+  .dark .liquid-glass-light:hover {
+    background: rgba(30, 41, 59, 0.75);
+    border-color: rgba(139, 92, 246, 0.2);
+  }
+
+  .liquid-glass {
+    background: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(14px) saturate(170%);
+    -webkit-backdrop-filter: blur(14px) saturate(170%);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 6px 28px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.85);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .liquid-glass:hover {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: rgba(99, 102, 241, 0.25);
+    box-shadow: 0 16px 48px rgba(99, 102, 241, 0.12);
+  }
+  .dark .liquid-glass {
+    background: rgba(30, 41, 59, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 6px 28px rgba(0, 0, 0, 0.22);
+  }
+  .dark .liquid-glass:hover {
+    background: rgba(30, 41, 59, 0.85);
+    border-color: rgba(139, 92, 246, 0.25);
+  }
+
+  .liquid-glass-strong {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(14px) saturate(170%);
+    -webkit-backdrop-filter: blur(14px) saturate(170%);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    box-shadow: 0 8px 32px rgba(99, 102, 241, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  }
+  .dark .liquid-glass-strong {
+    background: rgba(30, 41, 59, 0.75);
+    border: 1px solid rgba(139, 92, 246, 0.2);
+    box-shadow: 0 8px 32px rgba(139, 92, 246, 0.1);
+  }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 26px; border-radius: 12px;
+    font-weight: 600; font-size: 14px; cursor: pointer;
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    user-select: none;
+  }
+  .btn::before {
+    content: '';
+    position: absolute; top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+    transition: left 0.6s ease;
+  }
+  .btn:hover::before { left: 100%; }
+  .btn:active { transform: scale(0.98); }
+
+  .btn-primary {
+    @apply btn;
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a78bfa 100%);
+    background-size: 200% 200%;
+    color: #fff;
+    box-shadow: 
+      0 4px 20px rgba(99, 102, 241, 0.35), 
+      0 0 0 1px rgba(99, 102, 241, 0.15);
+  }
+  .btn-primary:hover {
+    /* 常驻的渐变流动已去掉（持续重绘很费电）；只在 hover 时播一次，效果还在 */
+    animation: gradient-shift 5s ease infinite;
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 
+      0 14px 48px rgba(99, 102, 241, 0.45), 
+      0 0 0 2px rgba(99, 102, 241, 0.25);
+  }
+
+  .btn-secondary {
+    @apply btn;
+    background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
+    color: #fff;
+    box-shadow: 0 4px 20px rgba(14, 165, 233, 0.35);
+  }
+  .btn-secondary:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 14px 48px rgba(14, 165, 233, 0.45);
+  }
+
+  .btn-outline {
+    @apply btn;
+    background: transparent;
+    border: 2px solid rgba(99, 102, 241, 0.25);
+    color: #6366f1;
+  }
+  .btn-outline:hover {
+    background: rgba(99, 102, 241, 0.1);
+    border-color: rgba(99, 102, 241, 0.5);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(99, 102, 241, 0.15);
+  }
+  .dark .btn-outline {
+    color: #a5b4fc;
+    border-color: rgba(139, 92, 246, 0.35);
+  }
+  .dark .btn-outline:hover {
+    background: rgba(139, 92, 246, 0.15);
+    border-color: rgba(139, 92, 246, 0.55);
+  }
+
+  .btn-glass {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 16px; border-radius: 12px;
+    font-weight: 500; font-size: 12px; cursor: pointer;
+    transition: all 0.3s ease;
+    background: rgba(99, 102, 241, 0.08);
+    color: #6366f1;
+    border: 1px solid rgba(99, 102, 241, 0.15);
+  }
+  .btn-glass:hover {
+    background: rgba(99, 102, 241, 0.15);
+    transform: translateY(-2px);
+  }
+  .dark .btn-glass {
+    background: rgba(139, 92, 246, 0.1);
+    color: #c4b5fd;
+    border-color: rgba(139, 92, 246, 0.2);
+  }
+  .dark .btn-glass:hover {
+    background: rgba(139, 92, 246, 0.2);
+  }
+
+  .nav-container {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+    background: rgba(255, 255, 255, 0);
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+    border-bottom: 1px solid transparent;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 12px 0;
+    /* 刘海屏安全区：不支持 env() 的浏览器会忽略下面这行，沿用上面的 12px */
+    padding-top: calc(12px + env(safe-area-inset-top, 0px));
+  }
+  .nav-container.scrolled {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
+    padding: 8px 0;
+    padding-top: calc(8px + env(safe-area-inset-top, 0px));
+  }
+  .dark .nav-container.scrolled {
+    background: rgba(15, 23, 42, 0.9);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.25);
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a78bfa 100%);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .gradient-border {
+    position: relative;
+    border-radius: 16px;
+  }
+  .gradient-border::before {
+    content: '';
+    position: absolute; inset: 0;
+    border-radius: inherit;
+    padding: 2px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6, #a78bfa);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  .skill-bar-container {
+    height: 8px; border-radius: 6px; overflow: hidden;
+    background: rgba(99, 102, 241, 0.08);
+    position: relative;
+  }
+  .dark .skill-bar-container { background: rgba(255, 255, 255, 0.05); }
+  .skill-bar-fill {
+    height: 100%; border-radius: 6px;
+    background: linear-gradient(90deg, #6366f1, #8b5cf6);
+    position: relative;
+    box-shadow: 0 0 12px rgba(99, 102, 241, 0.4);
+  }
+  .skill-bar-fill::after {
+    content: '';
+    position: absolute; top: 0; left: -100%;
+    width: 40%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+    animation: shimmer 2.5s ease-in-out infinite;
+  }
+
+  .tag {
+    display: inline-flex; align-items: center;
+    padding: 5px 14px; border-radius: 9999px;
+    font-size: 12px; font-family: 'Geist Mono', monospace;
+    font-weight: 500;
+    background: rgba(99, 102, 241, 0.1);
+    color: #6366f1;
+    transition: all 0.25s ease;
+    border: 1px solid rgba(99, 102, 241, 0.15);
+  }
+  .tag:hover {
+    background: rgba(99, 102, 241, 0.18);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+  }
+  .dark .tag { 
+    background: rgba(139, 92, 246, 0.15); 
+    color: #c4b5fd; 
+    border-color: rgba(139, 92, 246, 0.2);
+  }
+  .dark .tag:hover {
+    background: rgba(139, 92, 246, 0.25);
+  }
+
+  .mouse-glow {
+    position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999;
+    width: 450px; height: 450px;
+    margin-left: -225px; margin-top: -225px;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.06) 0%, rgba(139, 92, 246, 0.03) 40%, transparent 70%);
+    mix-blend-mode: screen;
+    border-radius: 50%;
+    will-change: transform;
+  }
+  .dark .mouse-glow {
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.08) 0%, rgba(99, 102, 241, 0.04) 40%, transparent 70%);
+  }
+
+  .animate-float {
+    animation: float 8s ease-in-out infinite;
+  }
+
+  .animate-slide-up {
+    animation: slide-up 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  .animate-scale-in {
+    animation: scale-in 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  .animate-pulse-glow {
+    animation: pulse-glow 2.5s ease-in-out infinite;
+  }
+
+  .animate-hover-lift {
+    animation: hover-lift 3s ease-in-out infinite;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  .card-hover {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .card-hover:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 24px 60px rgba(99, 102, 241, 0.1);
+  }
+
+  .section-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.3), transparent);
+    margin: 40px 0;
+  }
+}
+
+/*
+ * 层级约定（z-index scale），改动前先看这里：
+ *   0     背景粒子画布
+ *   10    页面内容
+ *   50    固定导航 / 回到顶部按钮
+ *   60    设置弹窗等浮层
+ *   9999  鼠标光晕（纯装饰层，不接收事件）
+ */
+
+/*
+ * 保底一：不支持 backdrop-filter 的浏览器（旧内核）里，毛玻璃会退化成几乎全透明，
+ * 文字压在背景上直接看不清。这里统一换成接近不透明的底色，保证内容可读。
+ */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass-effect,
+  .liquid-glass,
+  .liquid-glass-light,
+  .liquid-glass-strong,
+  .nav-container.scrolled {
+    background: rgba(255, 255, 255, 0.94);
+  }
+  .dark .glass-effect,
+  .dark .liquid-glass,
+  .dark .liquid-glass-light,
+  .dark .liquid-glass-strong,
+  .dark .nav-container.scrolled {
+    background: rgba(20, 20, 42, 0.96);
+  }
+}
+
+/*
+ * 保底二：触摸设备没有鼠标指针，光晕没有意义，直接隐藏（顺带省掉一个全屏混合图层）
+ */
+@media (pointer: coarse) {
+  .mouse-glow { display: none; }
+}
+
+/*
+ * 保底三：尊重系统的"减少动态效果"。
+ * 常驻动画与过渡全部关掉；canvas 粒子、鼠标光晕在各自组件里也会自行跳过。
+ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  html { scroll-behavior: auto; }
+  .mouse-glow { display: none !important; }
+}
