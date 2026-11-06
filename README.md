@@ -20,7 +20,7 @@
 - React 18 + Vite 5
 - Tailwind CSS 3
 - React Router 7（`BrowserRouter` + 懒加载路由）
-- GSAP / ScrollTrigger 动画
+- GSAP 动画（开场时间线 / 鼠标视差 / 磁吸按钮 / 3D 倾斜卡片）
 - react-helmet-async 管理页面 head
 - 字体自托管（`public/fonts/Geist-Variable.woff2`、`GeistMono-Variable.woff2`）
 - 站点图标由 `public/images/avatar.webp` 生成（`favicon.ico`、`favicon-32.png`、`favicon-64.png`、`apple-touch-icon.png`）
@@ -45,7 +45,7 @@ GitHub Pages，仓库根目录的 `CNAME` 与 `public/CNAME` 均指向 `skyernov
 
 - 推送 `master` 分支后，`.github/workflows/deploy.yml` 自动构建并发布
 - 推送前会尝试刷新粉丝数，抓取失败则沿用仓库里的旧值，不会让部署失败
-- CDN 加速：域名 NS 托管在 Cloudflare，DNS 以 CNAME（`skyernovie.github.io`）+ 代理模式接入，流量走 Cloudflare 边缘节点
+- CDN 与域名解析 DNS 均由**阿里云**提供，两者都已付费开通加速包：DNS 以 CNAME（`skyernovie.github.io`）接入，流量走阿里云 CDN 边缘节点
 
 `public/404.html` 负责把深链接重定向到 `/?path=...`，再由 `index.html` 顶部的脚本还原路径，保证刷新和直接访问不 404。
 
@@ -60,10 +60,12 @@ src/
   components/
     Navbar.jsx            # 导航（视频 / 社区 / 联系）+ 显示设置（主题）
     Footer.jsx            # 页脚
-    ParticleBackground.jsx / ScrollToTopFab.jsx
+    Ticker.jsx            # 跑马灯信息带
+    ParticleBackground.jsx # 像素孢子粒子 + 深色模式流星
+    ScrollToTopFab.jsx
     Loading.jsx
-    ui/                   # Button / PixelIcon / SectionHeading 等
-    shared/               # AnimatedLink / NotFound / PageLayout
+    ui/                   # Button / PixelIcon / SectionHeading / Toast 等
+    shared/               # NotFound
   context/ThemeContext.jsx
   data/
     site.js               # 站点文案与各类配置
@@ -71,7 +73,12 @@ src/
   pages/
     TzXyz.jsx             # 天真主页
     tz-sections/          # 首屏、数据卡片、视频、平台、社区、联系等区块
-  utils/gsapAnimations.js
+  utils/
+    gsap.js               # GSAP 单例与动效偏好判断
+    useTilt.js            # 卡片 3D 倾斜
+    useGlow.js            # 卡片光斑追踪
+    magnetic.js           # 按钮磁吸
+    useReveal.js / clipboard.js
 public/
   CNAME  404.html  favicon.ico  fonts/  images/
 scripts/

@@ -1,17 +1,30 @@
+import { useRef } from 'react'
 import { FiArrowUpRight, FiPlay } from 'react-icons/fi'
 import SectionHeading from '../../components/ui/SectionHeading'
 import PixelIcon from '../../components/ui/PixelIcon'
 import { moreVideosUrl, videos } from '../../data/site'
+import { useTilt } from '../../utils/useTilt'
+import { useGlowContainer } from '../../utils/useGlow'
+
+/* 系列标签的配色映射：格雷=草绿，新星工程=钻石青，蜜蜂/合集=金 */
+const TAG_TONES = {
+  accent: 'chip-accent',
+  diamond: 'chip-diamond',
+  gold: 'chip-gold',
+}
 
 function VideoCard({ item, index }) {
-  const isCollection = item.badge === '合集'
+  const isCollection = item.collection === true
+  const cardRef = useRef(null)
+  useTilt(cardRef)
 
   return (
     <a
+      ref={cardRef}
       href={item.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="reveal card group flex flex-col overflow-hidden hover:border-accent/30"
+      className="reveal card card-glow group flex flex-col overflow-hidden hover:border-accent/40"
       style={{ transitionDelay: `${Math.min(index, 4) * 70}ms` }}
     >
       <div className="relative aspect-video overflow-hidden">
@@ -30,8 +43,8 @@ function VideoCard({ item, index }) {
         />
 
         <span
-          className={`absolute left-3 top-3 inline-flex h-6 items-center rounded-lg px-2.5 text-[11.5px] font-bold backdrop-blur-md ${
-            isCollection ? 'bg-gold text-[#2b1f05]' : 'bg-black/55 text-white'
+          className={`pixel-tag absolute left-3 top-3 ${
+            isCollection ? 'pixel-tag--collection' : 'pixel-tag--ep'
           }`}
         >
           {item.badge}
@@ -41,14 +54,14 @@ function VideoCard({ item, index }) {
           className="absolute inset-0 grid place-items-center opacity-0 transition-opacity duration-300 group-hover:opacity-100"
           aria-hidden="true"
         >
-          <span className="grid h-14 w-14 place-items-center rounded-full border border-white/40 bg-white/15 text-white backdrop-blur-md">
+          <span className="grid h-14 w-14 place-items-center rounded-full border border-white/40 bg-white/15 text-white backdrop-blur-md transition-transform duration-300 group-hover:scale-110">
             <FiPlay size={20} className="translate-x-[1px]" />
           </span>
         </span>
       </div>
 
       <div className="flex flex-1 flex-col p-5">
-        <span className={`chip ${isCollection ? 'chip-gold' : 'chip-muted'}`}>{item.tag}</span>
+        <span className={`chip ${TAG_TONES[item.tone] || 'chip-muted'}`}>{item.tag}</span>
         <h3 className="mt-3 line-clamp-2 min-h-[2.75em] text-[15px] font-semibold leading-snug text-ink transition-colors group-hover:text-accent">
           {item.title}
         </h3>
@@ -71,9 +84,18 @@ function VideoCard({ item, index }) {
 }
 
 export default function Videos() {
+  const gridRef = useRef(null)
+  useGlowContainer(gridRef)
+
   return (
-    <section id="tz-video" className="scroll-mt-24 px-5 py-16 sm:py-20" aria-labelledby="videos-title">
-      <div className="mx-auto max-w-5xl">
+    <section id="tz-video" className="cinema-band scroll-mt-24 py-20 sm:py-24" aria-labelledby="videos-title">
+      {/* 带内漂移光雾，让深色底不沉闷 */}
+      <div className="band-aurora" aria-hidden="true">
+        <span className="band-aurora-a" />
+        <span className="band-aurora-b" />
+      </div>
+
+      <div className="relative mx-auto max-w-5xl px-5">
         <SectionHeading
           icon="play"
           label="Selected Videos"
@@ -81,7 +103,7 @@ export default function Videos() {
           desc="模组整合包实况与系列合集，持续更新中"
         />
 
-        <div className="mt-9 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div ref={gridRef} className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {videos.map((item, index) => (
             <VideoCard key={item.key} item={item} index={index} />
           ))}

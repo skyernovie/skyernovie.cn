@@ -11,7 +11,7 @@ export default defineConfig({
       output: {
         manualChunks: {
           'react-vendor': ['react', 'react-dom', 'react-router-dom', 'react-helmet-async'],
-          'gsap-vendor': ['gsap', '@gsap/react'],
+          'gsap-vendor': ['gsap'],
           'icons-vendor': ['react-icons'],
         },
         chunkFileNames: 'assets/[name]-[hash].js',

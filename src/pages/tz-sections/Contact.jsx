@@ -1,5 +1,7 @@
+import { useRef } from 'react'
 import { FiArrowUpRight, FiGithub } from 'react-icons/fi'
 import SectionHeading from '../../components/ui/SectionHeading'
+import { useGlowContainer } from '../../utils/useGlow'
 import { contacts, repo } from '../../data/site'
 
 const TONES = {
@@ -11,6 +13,9 @@ const TONES = {
 const MAILTO = `mailto:${repo.email}?subject=${encodeURIComponent('网站修改：Pull Request 提交')}&body=${encodeURIComponent('PR 链接：\n\n改动说明：\n')}`
 
 export default function Contact() {
+  const gridRef = useRef(null)
+  useGlowContainer(gridRef)
+
   return (
     <section id="tz-contact" className="scroll-mt-24 px-5 py-16 sm:py-20" aria-labelledby="contact-title">
       <div className="mx-auto max-w-5xl">
@@ -22,7 +27,7 @@ export default function Contact() {
           desc="直播通知 · 催更讨论 · 商务合作"
         />
 
-        <div className="mt-9 grid max-w-2xl gap-4 sm:mx-auto sm:grid-cols-2">
+        <div ref={gridRef} className="mt-9 grid max-w-2xl gap-4 sm:mx-auto sm:grid-cols-2">
           {contacts.map((item, index) => {
             const Icon = item.icon
             return (
@@ -31,7 +36,7 @@ export default function Contact() {
                 href={item.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="reveal card group flex items-center gap-4 p-5 hover:border-accent/30"
+                className="reveal card card-glow group flex items-center gap-4 p-5 hover:border-accent/30"
                 style={{ transitionDelay: `${index * 90}ms` }}
               >
                 <span

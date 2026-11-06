@@ -1,17 +1,39 @@
 import { useEffect, useRef } from 'react';
 import { useTheme } from '../context/ThemeContext.jsx';
 
-const LINK_DISTANCE = 100;
-const LINK_DISTANCE_SQ = LINK_DISTANCE * LINK_DISTANCE;
+/*
+ * 像素孢子背景：漂浮的小方块，像空气里的经验粒子 / 孢子。
+ * 三色矿石调色板（草绿为主、钻石青点缀、少量金），单个粒子带闪烁相位。
+ * 刻意不画粒子间连线——圆点+连线是模板标配，方块孢子才是 MC 的味道。
+ */
+const PALETTE = [
+  { rgb: '95, 208, 104', weight: 0.62 }, // 草绿
+  { rgb: '79, 224, 208', weight: 0.26 }, // 钻石青
+  { rgb: '245, 197, 66', weight: 0.12 }, // 金
+];
+
+function pickColor() {
+  const roll = Math.random();
+  let acc = 0;
+  for (const c of PALETTE) {
+    acc += c.weight;
+    if (roll <= acc) return c.rgb;
+  }
+  return PALETTE[0].rgb;
+}
 
 class Particle {
   constructor(width, height) {
     this.x = Math.random() * width;
     this.y = Math.random() * height;
-    this.size = Math.random() * 1.5 + 0.3;
-    this.speedX = (Math.random() - 0.5) * 0.3;
-    this.speedY = (Math.random() - 0.5) * 0.3;
-    this.opacity = Math.random() * 0.3 + 0.1;
+    // 2–4px 的小方块，大小带层级
+    this.size = Math.random() < 0.7 ? 2 : Math.random() < 0.85 ? 3 : 4;
+    this.speedX = (Math.random() - 0.5) * 0.24;
+    this.speedY = (Math.random() - 0.5) * 0.24;
+    this.baseOpacity = Math.random() * 0.32 + 0.12;
+    this.phase = Math.random() * Math.PI * 2;
+    this.twinkle = Math.random() * 0.0012 + 0.0004;
+    this.color = pickColor();
   }
 
   update(width, height) {
@@ -22,27 +44,29 @@ class Particle {
     if (this.y > height) this.y = 0;
     if (this.y < 0) this.y = height;
   }
+
+  opacityAt(time) {
+    return this.baseOpacity * (0.55 + 0.45 * Math.sin(time * this.twinkle + this.phase));
+  }
 }
 
 export default function ParticleBackground() {
   const canvasRef = useRef(null);
   const particlesRef = useRef([]);
+  const starsRef = useRef([]);
+  const nextStarRef = useRef(0);
   const frameRef = useRef(null);
   const runningRef = useRef(false);
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === 'dark';
 
   // 颜色强度放进 ref，主题切换时只改数值，不重启动画循环
-  const alphaRef = useRef({
-    particle: isDark ? 0.8 : 0.5,
-    line: isDark ? 0.06 : 0.04,
-  });
+  const alphaRef = useRef(isDark ? 0.85 : 0.55);
+  const darkRef = useRef(isDark);
 
   useEffect(() => {
-    alphaRef.current = {
-      particle: isDark ? 0.8 : 0.5,
-      line: isDark ? 0.06 : 0.04,
-    };
+    alphaRef.current = isDark ? 0.85 : 0.55;
+    darkRef.current = isDark;
   }, [isDark]);
 
   useEffect(() => {
@@ -76,44 +100,68 @@ export default function ParticleBackground() {
 
     // 粒子数量按面积算，手机等窄屏再降一档，避免小屏耗电
     const coarse = window.matchMedia?.('(pointer: coarse)').matches;
-    const count = coarse ? 30 : Math.min(Math.round((width * height) / 22000), 90);
+    const count = coarse ? 28 : Math.min(Math.round((width * height) / 26000), 72);
     particlesRef.current = Array.from({ length: count }, () => new Particle(width, height));
 
-    const draw = () => {
+    const draw = (time) => {
       ctx.clearRect(0, 0, width, height);
-      const { particle: particleAlpha, line: lineAlpha } = alphaRef.current;
+      const alpha = alphaRef.current;
       const particles = particlesRef.current;
 
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i];
         p.update(width, height);
-        ctx.fillStyle = `rgba(95, 208, 104, ${p.opacity * particleAlpha})`;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.fillStyle = `rgba(${p.color}, ${(p.opacityAt(time) * alpha).toFixed(3)})`;
+        ctx.fillRect(p.x, p.y, p.size, p.size);
+      }
 
-        for (let j = i + 1; j < particles.length; j++) {
-          const q = particles[j];
-          const dx = p.x - q.x;
-          const dy = p.y - q.y;
-          // 先用平方距离筛选，只有真正要画线的少数近邻才开方（画面完全一致，省掉上千次 sqrt）
-          const distSq = dx * dx + dy * dy;
-          if (distSq < LINK_DISTANCE_SQ) {
-            const dist = Math.sqrt(distSq);
-            ctx.strokeStyle = `rgba(79, 224, 208, ${lineAlpha * (1 - dist / LINK_DISTANCE)})`;
-            ctx.lineWidth = 0.5;
-            ctx.beginPath();
-            ctx.moveTo(p.x, p.y);
-            ctx.lineTo(q.x, q.y);
-            ctx.stroke();
+      // 流星：只在深色夜空出现，每 5–14 秒一颗，划过左上到右下，带渐隐尾迹
+      if (darkRef.current) {
+        if (time > nextStarRef.current) {
+          nextStarRef.current = time + 5000 + Math.random() * 9000;
+          starsRef.current.push({
+            x: width * 0.25 + Math.random() * width * 0.7,
+            y: Math.random() * height * 0.35,
+            vx: -(3.5 + Math.random() * 2.5),
+            vy: 2 + Math.random() * 1.6,
+            life: 0,
+            max: 55 + Math.random() * 25,
+          });
+        }
+
+        const stars = starsRef.current;
+        for (let i = stars.length - 1; i >= 0; i--) {
+          const s = stars[i];
+          s.life++;
+          s.x += s.vx;
+          s.y += s.vy;
+          if (s.life >= s.max || s.x < -80 || s.y > height + 80) {
+            stars.splice(i, 1);
+            continue;
           }
+          // 正弦包络：淡入再淡出，不会突然出现/消失
+          const fade = Math.sin((s.life / s.max) * Math.PI);
+          const tailX = s.x - s.vx * 16;
+          const tailY = s.y - s.vy * 16;
+          const grad = ctx.createLinearGradient(s.x, s.y, tailX, tailY);
+          grad.addColorStop(0, `rgba(233, 238, 247, ${(0.75 * fade).toFixed(3)})`);
+          grad.addColorStop(1, 'rgba(233, 238, 247, 0)');
+          ctx.strokeStyle = grad;
+          ctx.lineWidth = 1.4;
+          ctx.beginPath();
+          ctx.moveTo(s.x, s.y);
+          ctx.lineTo(tailX, tailY);
+          ctx.stroke();
+          // 星头是一颗小方块，呼应整体像素语言
+          ctx.fillStyle = `rgba(255, 255, 255, ${(0.9 * fade).toFixed(3)})`;
+          ctx.fillRect(s.x - 1, s.y - 1, 2.5, 2.5);
         }
       }
     };
 
-    const loop = () => {
+    const loop = (time) => {
       if (!runningRef.current) return;
-      draw();
+      draw(time);
       frameRef.current = requestAnimationFrame(loop);
     };
 

@@ -139,6 +139,87 @@
     background-size: auto, auto, auto, 32px 32px, 32px 32px;
   }
 
+  /* ---------- 影院带（视频区专属氛围） ---------- */
+  /*
+   * 令牌覆盖：带内 --ink/--muted/各强调色全部换成深底变体，
+   * 内部组件（section-title / chip / card…）无需任何改动就自动反色。
+   * 浅色模式是"草原深夜"的墨绿，深色模式是比页底更暗的"虚空黑"，
+   * 两种主题下都有自己的氛围，不是硬套同一层黑。
+   */
+  .cinema-band {
+    position: relative;
+    isolation: isolate;
+
+    --ink: 232 240 234;
+    --muted: 148 172 156;
+    --line: 255 255 255;
+    --accent: 95 208 104;
+    --accent-soft: 95 208 104;
+    --accent-ink: 5 32 12;
+    --diamond: 79 224 208;
+    --gold: 245 197 66;
+    --redstone: 224 91 74;
+    --shadow: 0 0 0;
+
+    --band: 11 22 14;
+    background-color: rgb(var(--band));
+    background-image:
+      radial-gradient(980px 460px at 10% -8%, rgb(var(--accent) / 0.16), transparent 62%),
+      radial-gradient(820px 420px at 92% 108%, rgb(var(--diamond) / 0.12), transparent 58%),
+      linear-gradient(rgb(255 255 255 / 0.032) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(255 255 255 / 0.032) 1px, transparent 1px);
+    background-size: auto, auto, 28px 28px, 28px 28px;
+  }
+  .dark .cinema-band {
+    --band: 3 6 12;
+    --muted: 140 158 180;
+    background-image:
+      radial-gradient(1000px 480px at 8% -10%, rgb(var(--accent) / 0.12), transparent 60%),
+      radial-gradient(860px 420px at 94% 110%, rgb(99 102 241 / 0.14), transparent 60%),
+      radial-gradient(560px 300px at 55% 0%, rgb(var(--diamond) / 0.07), transparent 55%),
+      linear-gradient(rgb(255 255 255 / 0.028) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(255 255 255 / 0.028) 1px, transparent 1px);
+  }
+
+  /* 带体上下边缘的像素阶梯：两行错位的方块，像地形切面 */
+  .cinema-band::before,
+  .cinema-band::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 12px;
+    background-image:
+      linear-gradient(to right, rgb(var(--band)) 50%, transparent 50%),
+      linear-gradient(to right, rgb(var(--band)) 50%, transparent 50%);
+    background-size: 16px 6px, 16px 6px;
+    background-position: 0 0, 8px 6px;
+    background-repeat: repeat-x;
+    pointer-events: none;
+  }
+  .cinema-band::before {
+    top: -12px;
+  }
+  .cinema-band::after {
+    bottom: -12px;
+    transform: scaleY(-1);
+  }
+
+  /* 带内卡片：深色玻璃变体 */
+  .cinema-band .card {
+    border-color: rgb(255 255 255 / 0.1);
+    background: linear-gradient(180deg, rgb(255 255 255 / 0.07), rgb(255 255 255 / 0.028));
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.08),
+      0 24px 48px -28px #000;
+  }
+  .cinema-band .card-hover:hover {
+    border-color: rgb(var(--accent) / 0.4);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.1),
+      0 32px 60px -30px #000;
+  }
+
   /* ---------- 卡片 ---------- */
   .card {
     position: relative;
@@ -220,6 +301,47 @@
   .card-sweep:hover::after {
     opacity: 1;
     background-position: 15% 50%;
+  }
+
+  /* ---------- 像素游戏 UI ---------- */
+  /* 像素框：像 MC 物品栏选中的格子，硬边描边 + 错位实心投影。给 featured 内容用 */
+  .pixel-frame {
+    border: 2px solid rgb(var(--accent) / 0.6) !important;
+    box-shadow:
+      inset 0 0 0 2px rgb(0 0 0 / 0.22),
+      5px 5px 0 0 rgb(var(--accent) / 0.22) !important;
+  }
+  .pixel-frame:hover {
+    border-color: rgb(var(--accent) / 0.85) !important;
+    box-shadow:
+      inset 0 0 0 2px rgb(0 0 0 / 0.22),
+      6px 6px 0 0 rgb(var(--accent) / 0.3) !important;
+  }
+
+  /* 像素标签：视频缩略图上的 EP/合集 角标，游戏 GUI 质感（硬边 + 顶部高光 + 实心投影） */
+  .pixel-tag {
+    display: inline-flex;
+    align-items: center;
+    height: 24px;
+    padding: 0 9px;
+    border-radius: 3px;
+    border: 2px solid rgb(0 0 0 / 0.5);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    line-height: 1;
+    white-space: nowrap;
+    box-shadow:
+      inset 0 2px 0 rgb(255 255 255 / 0.28),
+      2px 2px 0 rgb(0 0 0 / 0.35);
+  }
+  .pixel-tag--ep {
+    background: rgb(var(--accent));
+    color: rgb(var(--accent-ink));
+  }
+  .pixel-tag--collection {
+    background: rgb(var(--gold));
+    color: #2b1f05;
   }
 
   /* ---------- 按钮 ---------- */
@@ -421,7 +543,7 @@
   }
   .section-title {
     margin-top: 10px;
-    font-size: clamp(23px, 3.2vw, 31px);
+    font-size: clamp(24px, 3.4vw, 34px);
     font-weight: 700;
     letter-spacing: -0.02em;
     line-height: 1.25;
@@ -463,9 +585,10 @@
       backdrop-filter 0.35s var(--ease);
   }
   .nav-shell.is-scrolled {
-    background: rgb(var(--bg) / 0.76);
-    border-bottom-color: rgb(var(--line) / 0.08);
-    box-shadow: 0 14px 34px -28px rgb(var(--shadow) / 0.65);
+    /* 不透明度要高：滚动到深色影院带上时，底色透了太多会让导航文字糊掉 */
+    background: rgb(var(--bg) / 0.9);
+    border-bottom-color: rgb(var(--line) / 0.1);
+    box-shadow: 0 14px 34px -26px rgb(var(--shadow) / 0.7);
     backdrop-filter: blur(18px) saturate(160%);
     -webkit-backdrop-filter: blur(18px) saturate(160%);
   }
@@ -497,6 +620,19 @@
     margin-left: -2px;
     border-radius: 1px;
     background: rgb(var(--accent));
+  }
+
+  /* 阅读进度：导航底部 2px，草绿渐变到钻石青，JS 直接改 transform 不触发重渲染 */
+  .nav-progress {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 2px;
+    transform-origin: 0 50%;
+    transform: scaleX(0);
+    background: linear-gradient(90deg, rgb(var(--accent)), rgb(var(--diamond)));
+    pointer-events: none;
   }
 
   /* ---------- 提示条（成就达成） ---------- */
@@ -583,6 +719,179 @@
   .skip-link:focus-visible {
     transform: none;
   }
+
+  /* ---------- 极光氛围 ---------- */
+  /* 首屏卡片里的两团漂移色光，GSAP 之外的慢速环境动效，纯 CSS 循环 */
+  .hero-aurora {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(56px);
+    pointer-events: none;
+  }
+  .hero-aurora--a {
+    width: 420px;
+    height: 420px;
+    top: -170px;
+    right: -90px;
+    background: rgb(var(--accent) / 0.15);
+    animation: aurora-a 14s ease-in-out infinite alternate;
+  }
+  .hero-aurora--b {
+    width: 360px;
+    height: 360px;
+    bottom: -190px;
+    left: -110px;
+    background: rgb(var(--diamond) / 0.11);
+    animation: aurora-b 18s ease-in-out infinite alternate;
+  }
+  .dark .hero-aurora--a {
+    background: rgb(var(--accent) / 0.2);
+  }
+  .dark .hero-aurora--b {
+    background: rgb(var(--diamond) / 0.15);
+  }
+
+  /* 影院带内部的光雾，同样慢速漂移，带体不会死板 */
+  .band-aurora {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .band-aurora span {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(72px);
+  }
+  .band-aurora-a {
+    width: 480px;
+    height: 480px;
+    top: -170px;
+    left: -130px;
+    background: rgb(var(--accent) / 0.14);
+    animation: aurora-a 20s ease-in-out infinite alternate;
+  }
+  .band-aurora-b {
+    width: 420px;
+    height: 420px;
+    bottom: -190px;
+    right: -110px;
+    background: rgb(var(--diamond) / 0.1);
+    animation: aurora-b 24s ease-in-out infinite alternate;
+  }
+
+  /* ---------- 跑马灯信息带 ---------- */
+  .ticker {
+    overflow: hidden;
+    border-block: 1px solid rgb(var(--line) / 0.08);
+    padding-block: 11px;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+  }
+  .ticker-track {
+    display: flex;
+    width: max-content;
+    animation: ticker-move 32s linear infinite;
+  }
+  .ticker:hover .ticker-track {
+    animation-play-state: paused;
+  }
+  .ticker-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    padding-inline: 20px;
+    font-family: 'Geist Mono', ui-monospace, SFMono-Regular, Consolas, 'PingFang SC',
+      'Microsoft YaHei', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgb(var(--muted));
+    white-space: nowrap;
+  }
+  .ticker-item::before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    border-radius: 1px;
+    background: rgb(var(--accent) / 0.7);
+  }
+
+  /* ---------- 卡片光斑追踪 ---------- */
+  /* 鼠标扫过卡片时一团径向光跟着走，JS 只管写 --mx/--my，渲染全在这 */
+  .card-glow::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(
+      280px circle at var(--mx, 50%) var(--my, 50%),
+      rgb(var(--accent) / 0.13),
+      transparent 65%
+    );
+    opacity: 0;
+    transition: opacity 0.35s var(--ease);
+    pointer-events: none;
+  }
+  .card-glow:hover::after {
+    opacity: 1;
+  }
+  .dark .card-glow::after,
+  .cinema-band .card-glow::after {
+    background: radial-gradient(
+      280px circle at var(--mx, 50%) var(--my, 50%),
+      rgb(var(--accent) / 0.16),
+      transparent 65%
+    );
+  }
+
+  /* ---------- CTA 待机微浮动 ---------- */
+  /* Hero 按钮行的待机浮动：幅度只有 2.5px，错开相位像各自呼吸。
+     animation-delay 设在 JSX 里（入场时间线播完才开始，避免和 GSAP 抢 transform） */
+  .cta-float {
+    display: inline-flex;
+    animation: cta-float 3.4s ease-in-out infinite;
+    will-change: transform;
+  }
+
+  /* ---------- 头像彩蛋 ---------- */
+  /* 点击头像时的果冻挤压回弹 */
+  .avatar-boop {
+    animation: avatar-boop 0.45s var(--ease);
+  }
+
+  /* 彩蛋气泡：从头像顶部飘出、停留片刻、向上消散 */
+  .egg-bubble {
+    position: absolute;
+    left: 50%;
+    top: -10px;
+    z-index: 30;
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    border-radius: 8px;
+    background: rgb(var(--ink));
+    color: rgb(var(--bg));
+    font-size: 12.5px;
+    font-weight: 700;
+    white-space: nowrap;
+    box-shadow: 0 10px 24px -12px rgb(var(--shadow) / 0.6);
+    animation: egg-float 1.65s var(--ease) forwards;
+    pointer-events: none;
+  }
+  .egg-bubble::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -4px;
+    width: 8px;
+    height: 8px;
+    margin-left: -4px;
+    transform: rotate(45deg);
+    background: inherit;
+    border-radius: 1px;
+  }
 }
 
 @keyframes hero-step-in {
@@ -629,6 +938,76 @@
   }
   50% {
     transform: translateY(-12px);
+  }
+}
+
+@keyframes aurora-a {
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+  to {
+    transform: translate(-48px, 32px) scale(1.12);
+  }
+}
+
+@keyframes aurora-b {
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+  to {
+    transform: translate(42px, -28px) scale(1.08);
+  }
+}
+
+@keyframes ticker-move {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes cta-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(2.5px);
+  }
+}
+
+@keyframes avatar-boop {
+  0% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(0.9) rotate(-3deg);
+  }
+  60% {
+    transform: scale(1.06) rotate(2deg);
+  }
+  100% {
+    transform: scale(1) rotate(0);
+  }
+}
+
+@keyframes egg-float {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 8px) scale(0.8);
+  }
+  14% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1.04);
+  }
+  24% {
+    transform: translate(-50%, 0) scale(1);
+  }
+  78% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -56px) scale(0.98);
   }
 }
 

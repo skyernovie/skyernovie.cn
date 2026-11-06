@@ -61,7 +61,7 @@ function StatValue({ raw, animate }) {
 
   if (!parsed) {
     return (
-      <span className="flex h-[30px] items-center text-[15px] font-semibold leading-tight text-ink sm:h-[32px]">
+      <span className="flex h-[38px] items-center text-[16px] font-semibold leading-tight text-ink sm:h-[44px]">
         {raw}
       </span>
     )
@@ -70,11 +70,11 @@ function StatValue({ raw, animate }) {
   const unit = parsed[2].trim()
 
   return (
-    <span className="flex h-[30px] items-baseline gap-1 sm:h-[32px]">
-      <span className="num text-[26px] font-bold leading-none text-ink sm:text-[30px]">
+    <span className="flex h-[38px] items-baseline gap-1 sm:h-[44px]">
+      <span className="num text-[32px] font-bold leading-none text-ink sm:text-[38px]">
         {animate ? counted : parsed[1]}
       </span>
-      {unit ? <span className="text-[11.5px] font-semibold leading-none text-muted">{unit}</span> : null}
+      {unit ? <span className="text-[12px] font-semibold leading-none text-muted">{unit}</span> : null}
     </span>
   )
 }
@@ -117,14 +117,14 @@ export default function Stats() {
               key={item.key}
               tabIndex={item.tip ? 0 : undefined}
               aria-describedby={item.tip ? `${item.key}-tip` : undefined}
-              className={`group relative flex flex-col gap-2 border-line/[0.09] px-4 py-4 outline-none sm:px-6 sm:py-5 ${
+              className={`group relative flex flex-col gap-2.5 border-line/[0.09] px-4 py-5 outline-none sm:px-6 sm:py-6 ${
                 index === 1 || index === 3 ? 'border-l' : ''
               } ${index >= 2 ? 'border-t sm:border-t-0' : ''} ${index > 0 ? 'sm:border-l' : ''} ${
                 item.tip ? 'cursor-help focus-visible:ring-2 focus-visible:ring-accent/40' : ''
               }`}
             >
-              <span className={`grid h-8 w-8 place-items-center rounded-[9px] border ${ICON_TONES[item.icon]}`}>
-                <PixelIcon name={item.icon} size={15} />
+              <span className={`grid h-10 w-10 place-items-center rounded-[10px] border ${ICON_TONES[item.icon]}`}>
+                <PixelIcon name={item.icon} size={18} />
               </span>
 
               <StatValue raw={item.value} animate={!!item.tip} />

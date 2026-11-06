@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet-async'
 import { useReveal } from '../utils/useReveal'
 import Hero from './tz-sections/Hero'
 import Stats from './tz-sections/Stats'
+import Ticker from '../components/Ticker'
 import Videos from './tz-sections/Videos'
 import Platforms from './tz-sections/Platforms'
 import Community from './tz-sections/Community'
@@ -45,6 +46,10 @@ export default function TzXyz() {
       <div ref={rootRef}>
         <Hero />
         <Stats />
+        {/* 数据栏与影院带之间的信息滚带，下方留白给影院带的像素阶梯边缘让位 */}
+        <div className="mt-14 pb-14">
+          <Ticker />
+        </div>
         <Videos />
         <Platforms />
         <Community />

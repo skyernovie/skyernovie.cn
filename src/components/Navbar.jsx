@@ -89,9 +89,10 @@ export default function Navbar() {
   const settingsAnchor = useRef(null)
   const mobilePanelRef = useRef(null)
   const menuButtonRef = useRef(null)
+  const progressRef = useRef(null)
   const rafRef = useRef(null)
 
-  // 当前区块高亮
+  // 当前区块高亮 + 顶部阅读进度条
   useEffect(() => {
     const onScroll = () => {
       if (rafRef.current !== null) return
@@ -106,6 +107,14 @@ export default function Navbar() {
           if (el && el.getBoundingClientRect().top <= 160) current = link.href
         }
         setActiveId(current)
+
+        // 进度条直接改 transform，不经过 React 渲染
+        const doc = document.documentElement
+        const max = doc.scrollHeight - window.innerHeight
+        const progress = max > 0 ? Math.min(top / max, 1) : 0
+        if (progressRef.current) {
+          progressRef.current.style.transform = `scaleX(${progress})`
+        }
       })
     }
     onScroll()
@@ -294,6 +303,8 @@ export default function Navbar() {
           </div>
         </>
       )}
+
+      <span ref={progressRef} className="nav-progress" aria-hidden="true" />
     </header>
   )
 }

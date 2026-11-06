@@ -1,9 +1,11 @@
+import { useRef } from 'react'
 import { FiCopy } from 'react-icons/fi'
 import Button from '../../components/ui/Button'
 import PixelIcon from '../../components/ui/PixelIcon'
 import SectionHeading from '../../components/ui/SectionHeading'
 import { useToast } from '../../components/ui/Toast'
 import { copyText } from '../../utils/clipboard'
+import { useGlowContainer } from '../../utils/useGlow'
 import { communities } from '../../data/site'
 
 const STATE_BADGE = {
@@ -14,6 +16,8 @@ const STATE_BADGE = {
 
 export default function Community() {
   const toast = useToast()
+  const gridRef = useRef(null)
+  useGlowContainer(gridRef)
 
   const handleCopy = async (item) => {
     if (!item.code) return
@@ -36,11 +40,11 @@ export default function Community() {
           desc="加群获取开播提醒、模组包更新和直播通知"
         />
 
-        <div className="mt-9 grid gap-4 sm:grid-cols-2">
+        <div ref={gridRef} className="mt-9 grid gap-4 sm:grid-cols-2">
           {communities.map((item, index) => (
             <div
               key={item.key}
-              className="reveal card card-hover flex flex-col gap-3 p-5"
+              className="reveal card card-hover card-glow flex flex-col gap-3 p-5"
               style={{ transitionDelay: `${index * 70}ms` }}
             >
               <div className="flex min-w-0 items-center gap-2.5 pr-[74px]">
