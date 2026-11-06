@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { HiMenuAlt3, HiX } from 'react-icons/hi'
-import { FiSun, FiMoon, FiMonitor, FiMousePointer, FiSettings } from 'react-icons/fi'
+import { FiSun, FiMoon, FiMonitor, FiSettings } from 'react-icons/fi'
 import { useTheme } from '../context/ThemeContext.jsx'
 import PixelIcon from './ui/PixelIcon'
 
 /*
  * 本站就是天真SkyerNovie 的主页，导航只做页内锚点：
- * 顶部有滚动进度条，当前区块高亮；移动端抽屉支持 ESC / 点遮罩关闭并锁滚动。
+ * 当前区块高亮；移动端抽屉支持 ESC / 点遮罩关闭并锁滚动。
  */
 const NAV_LINKS = [
   { name: '视频', href: '#tz-video' },
@@ -16,7 +16,7 @@ const NAV_LINKS = [
 ]
 
 function SettingsPopover({ open, onClose, anchorRef }) {
-  const { theme, setTheme, mouseGlow, toggleMouseGlow } = useTheme()
+  const { theme, setTheme } = useTheme()
   const ref = useRef(null)
 
   useEffect(() => {
@@ -71,34 +71,6 @@ function SettingsPopover({ open, onClose, anchorRef }) {
           {mode.label}
         </button>
       ))}
-
-      <div className="my-2 h-px bg-line/10" />
-
-      <button
-        type="button"
-        onClick={toggleMouseGlow}
-        aria-pressed={mouseGlow}
-        className={`flex w-full items-center justify-between rounded-[9px] px-3 py-2 text-[13px] transition-colors ${
-          mouseGlow ? 'text-accent' : 'text-muted'
-        } hover:bg-line/[0.04] dark:hover:bg-white/[0.05]`}
-      >
-        <span className="flex items-center gap-3">
-          <FiMousePointer size={14} aria-hidden="true" />
-          鼠标光效
-        </span>
-        <span
-          className={`relative h-4 w-8 rounded-full transition-colors duration-300 ${
-            mouseGlow ? 'bg-accent' : 'bg-line/20'
-          }`}
-          aria-hidden="true"
-        >
-          <span
-            className={`absolute top-0.5 h-3 w-3 rounded-full bg-white shadow transition-all duration-300 ${
-              mouseGlow ? 'left-[18px]' : 'left-0.5'
-            }`}
-          />
-        </span>
-      </button>
     </div>
   )
 }
@@ -110,7 +82,6 @@ export default function Navbar() {
   const isHome = location.pathname === '/'
 
   const [scrolled, setScrolled] = useState(false)
-  const [progress, setProgress] = useState(0)
   const [activeId, setActiveId] = useState('')
   const [mobileOpen, setMobileOpen] = useState(false)
   const [settingsOpen, setSettingsOpen] = useState(false)
@@ -120,16 +91,14 @@ export default function Navbar() {
   const menuButtonRef = useRef(null)
   const rafRef = useRef(null)
 
-  // 进度条 + 当前区块高亮（同一帧里算，避免多次布局）
+  // 当前区块高亮
   useEffect(() => {
     const onScroll = () => {
       if (rafRef.current !== null) return
       rafRef.current = requestAnimationFrame(() => {
         rafRef.current = null
         const top = window.scrollY
-        const max = document.documentElement.scrollHeight - window.innerHeight
         setScrolled(top > 12)
-        setProgress(max > 0 ? Math.min(100, (top / max) * 100) : 0)
 
         let current = ''
         for (const link of NAV_LINKS) {
@@ -198,8 +167,6 @@ export default function Navbar() {
 
   return (
     <header className={`nav-shell ${scrolled ? 'is-scrolled' : ''}`}>
-      <div className="scroll-progress" style={{ transform: `scaleX(${progress / 100})` }} aria-hidden="true" />
-
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-3">
         <button
           type="button"

@@ -34,6 +34,34 @@ export default function Footer() {
           </a>
         </div>
       </div>
+
+      <div className="mx-auto mt-4 flex max-w-6xl flex-wrap items-center justify-center gap-x-3 gap-y-1.5 text-[12px] text-muted">
+        <span className="inline-flex items-center gap-1.5">
+          <span className="opacity-80">友情链接</span>
+          <a
+            href="https://www.zhcool.xyz"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold tracking-wide text-ink underline-offset-2 transition-colors hover:text-accent hover:underline"
+          >
+            WWW.ZHCOOL.XYZ
+          </a>
+        </span>
+        <span aria-hidden="true" className="opacity-40">
+          ·
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <span className="opacity-80">老网站</span>
+          <a
+            href="https://zhcool520.xyz/tz"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold tracking-wide text-ink underline-offset-2 transition-colors hover:text-accent hover:underline"
+          >
+            ZHCOOL520.XYZ/TZ
+          </a>
+        </span>
+      </div>
     </footer>
   )
 }

@@ -222,3 +222,11 @@ export const contacts = [
 ]
 
 export const externalIcon = FiExternalLink
+
+/* 开源仓库信息：页面上展示仓库入口，并引导 fork / 提 PR / 申请协作权限 */
+export const repo = {
+  url: 'https://github.com/skyernovie/skyernovie.cn',
+  label: 'skyernovie/skyernovie.cn',
+  email: 'ZHCOOL520@qq.com',
+}
+

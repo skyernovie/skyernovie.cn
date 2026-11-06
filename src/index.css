@@ -412,17 +412,6 @@
     background: rgb(var(--accent));
   }
 
-  .scroll-progress {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 60;
-    height: 2px;
-    width: 100%;
-    transform-origin: 0 50%;
-    background: linear-gradient(90deg, rgb(var(--accent)), rgb(var(--diamond)));
-  }
-
   /* ---------- 提示条（成就达成） ---------- */
   .toast-stack {
     position: fixed;
@@ -552,9 +541,8 @@
  *   0    背景粒子画布
  *   10   页面内容
  *   50   固定导航 / 回到顶部按钮
- *   60   滚动进度条 / 设置浮层
+ *   60   设置浮层
  *   70   提示条
- *   9999 鼠标光晕（纯装饰，不接收事件）
  */
 
 /* 保底一：不支持 backdrop-filter 的旧内核里，毛玻璃会退化成几乎全透明，换成接近不透明的底色保证可读 */
@@ -565,14 +553,7 @@
   }
 }
 
-/* 保底二：触摸设备没有指针，光晕没有意义 */
-@media (pointer: coarse) {
-  .mouse-glow {
-    display: none;
-  }
-}
-
-/* 保底三：尊重"减少动态效果"，常驻动画与过渡全部关掉，内容直接显示 */
+/* 保底二：尊重"减少动态效果"，常驻动画与过渡全部关掉，内容直接显示 */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -587,8 +568,5 @@
   .reveal {
     opacity: 1 !important;
     transform: none !important;
-  }
-  .mouse-glow {
-    display: none !important;
   }
 }

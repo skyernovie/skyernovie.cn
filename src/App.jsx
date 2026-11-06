@@ -5,7 +5,6 @@ import ParticleBackground from './components/ParticleBackground'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import Loading from './components/Loading'
-import MouseGlow from './components/MouseGlow'
 import ScrollToTopFab from './components/ScrollToTopFab'
 import { ToastProvider } from './components/ui/Toast'
 
@@ -62,7 +61,6 @@ export default function App() {
 
           <div className="page-backdrop relative min-h-screen transition-colors duration-300">
             <ParticleBackground />
-            <MouseGlow />
 
             <a className="skip-link" href="#main">
               跳到主要内容

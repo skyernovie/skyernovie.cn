@@ -1,11 +1,13 @@
-import { FiArrowUpRight } from 'react-icons/fi'
+import { FiArrowUpRight, FiGithub } from 'react-icons/fi'
 import SectionHeading from '../../components/ui/SectionHeading'
-import { contacts } from '../../data/site'
+import { contacts, repo } from '../../data/site'
 
 const TONES = {
   bili: 'border-bili/25 bg-bili/10 text-bili',
   diamond: 'border-diamond-500/25 bg-diamond-500/10 text-diamond-700 dark:text-diamond-500',
 }
+
+const MAILTO = `mailto:${repo.email}?subject=${encodeURIComponent('网站修改：Pull Request 提交')}&body=${encodeURIComponent('PR 链接：\n\n改动说明：\n')}`
 
 export default function Contact() {
   return (
@@ -46,6 +48,43 @@ export default function Contact() {
               </a>
             )
           })}
+        </div>
+
+        <div className="mx-auto mt-4 max-w-2xl">
+          <div className="reveal card p-5">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="flex min-w-0 items-center gap-3">
+                <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl border border-accent/25 bg-accent/10 text-accent">
+                  <FiGithub size={22} aria-hidden="true" />
+                </span>
+                <span className="min-w-0">
+                  <span className="block text-[15px] font-semibold text-ink">本站已开源</span>
+                  <span className="mt-0.5 block truncate text-[12.5px] text-muted">{repo.label}</span>
+                </span>
+              </div>
+              <a
+                href={repo.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-accent/30 bg-accent/10 px-3.5 py-2 text-[12.5px] font-semibold text-accent transition hover:bg-accent/15"
+              >
+                GitHub 仓库
+                <FiArrowUpRight
+                  size={14}
+                  aria-hidden="true"
+                  className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                />
+              </a>
+            </div>
+
+            <p className="mt-4 text-[12.5px] leading-relaxed text-muted">
+              想修改这个网站？可以先 Fork 仓库、提交改动，再把 Pull Request 链接发到
+              <a href={MAILTO} className="mx-1 font-semibold text-accent underline-offset-2 hover:underline">
+                {repo.email}
+              </a>
+              。如果你在舰长群里，也可以把 GitHub 账号发给我，我给你开协作权限。
+            </p>
+          </div>
         </div>
       </div>
     </section>

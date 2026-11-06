@@ -8,18 +8,12 @@ function getInitialTheme() {
   return 'system';
 }
 
-function getInitialGlow() {
-  const saved = localStorage.getItem('mouseGlow');
-  return saved !== null ? saved === 'true' : true;
-}
-
 function getSystemTheme() {
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
 
 export function ThemeProvider({ children }) {
   const [theme, setTheme] = useState(getInitialTheme);
-  const [mouseGlow, setMouseGlow] = useState(getInitialGlow);
 
   const resolvedTheme = theme === 'system' ? getSystemTheme() : theme;
 
@@ -50,16 +44,8 @@ export function ThemeProvider({ children }) {
     setThemeAndPersist(resolvedTheme === 'dark' ? 'light' : 'dark');
   }, [resolvedTheme, setThemeAndPersist]);
 
-  const toggleMouseGlow = useCallback(() => {
-    setMouseGlow(prev => {
-      const next = !prev;
-      localStorage.setItem('mouseGlow', String(next));
-      return next;
-    });
-  }, []);
-
   return (
-    <ThemeContext.Provider value={{ theme, resolvedTheme, setTheme: setThemeAndPersist, toggleTheme, mouseGlow, toggleMouseGlow }}>
+    <ThemeContext.Provider value={{ theme, resolvedTheme, setTheme: setThemeAndPersist, toggleTheme }}>
       {children}
     </ThemeContext.Provider>
   );
