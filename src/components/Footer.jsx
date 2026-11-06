@@ -37,7 +37,7 @@ export default function Footer() {
 
       <div className="mx-auto mt-4 flex max-w-6xl flex-wrap items-center justify-center gap-x-3 gap-y-1.5 text-[12px] text-muted">
         <span className="inline-flex items-center gap-1.5">
-          <span className="opacity-80">友情链接</span>
+          <span className="text-ink/70">友情链接</span>
           <a
             href="https://www.zhcool.xyz"
             target="_blank"
@@ -51,7 +51,7 @@ export default function Footer() {
           ·
         </span>
         <span className="inline-flex items-center gap-1.5">
-          <span className="opacity-80">老网站</span>
+          <span className="text-ink/70">老网站</span>
           <a
             href="https://zhcool520.xyz/tz"
             target="_blank"

@@ -3,9 +3,9 @@ import SectionHeading from '../../components/ui/SectionHeading'
 import { platforms } from '../../data/site'
 
 const TONES = {
-  grass: 'border-grass-500/25 bg-grass-500/10 text-grass-700 dark:text-grass-400',
-  gold: 'border-gold-500/25 bg-gold-500/10 text-gold-700 dark:text-gold-500',
-  diamond: 'border-diamond-500/25 bg-diamond-500/10 text-diamond-700 dark:text-diamond-500',
+  grass: 'border-accent/25 bg-accent/10 text-accent',
+  gold: 'border-gold/25 bg-gold/10 text-gold',
+  diamond: 'border-diamond/25 bg-diamond/10 text-diamond',
 }
 
 const BADGE_TONES = {
@@ -35,7 +35,7 @@ export default function Platforms() {
                 href={item.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="reveal card card-hover group flex flex-col gap-3 p-5"
+                className="reveal card card-sweep group flex flex-col gap-3 p-5"
                 style={{ transitionDelay: `${index * 80}ms` }}
               >
                 <span className={`grid h-11 w-11 place-items-center rounded-xl border ${TONES[item.tone]}`}>

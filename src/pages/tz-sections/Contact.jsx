@@ -3,8 +3,9 @@ import SectionHeading from '../../components/ui/SectionHeading'
 import { contacts, repo } from '../../data/site'
 
 const TONES = {
-  bili: 'border-bili/25 bg-bili/10 text-bili',
-  diamond: 'border-diamond-500/25 bg-diamond-500/10 text-diamond-700 dark:text-diamond-500',
+  bili: 'border-bili/25 bg-bili/10 text-bili group-hover:border-bili/45 group-hover:bg-bili group-hover:text-white',
+  diamond:
+    'border-diamond/25 bg-diamond/10 text-diamond group-hover:border-diamond/45 group-hover:bg-diamond group-hover:text-[#06201d]',
 }
 
 const MAILTO = `mailto:${repo.email}?subject=${encodeURIComponent('网站修改：Pull Request 提交')}&body=${encodeURIComponent('PR 链接：\n\n改动说明：\n')}`
@@ -30,10 +31,12 @@ export default function Contact() {
                 href={item.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="reveal card card-hover group flex items-center gap-4 p-5"
+                className="reveal card group flex items-center gap-4 p-5 hover:border-accent/30"
                 style={{ transitionDelay: `${index * 90}ms` }}
               >
-                <span className={`grid h-12 w-12 shrink-0 place-items-center rounded-xl border ${TONES[item.tone]}`}>
+                <span
+                  className={`grid h-12 w-12 shrink-0 place-items-center rounded-xl border transition-colors duration-300 ${TONES[item.tone]}`}
+                >
                   <Icon size={22} aria-hidden="true" />
                 </span>
                 <span className="min-w-0 flex-1">
@@ -54,7 +57,7 @@ export default function Contact() {
           <div className="reveal card p-5">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div className="flex min-w-0 items-center gap-3">
-                <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl border border-accent/25 bg-accent/10 text-accent">
+                <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl border border-diamond/25 bg-diamond/10 text-diamond">
                   <FiGithub size={22} aria-hidden="true" />
                 </span>
                 <span className="min-w-0">

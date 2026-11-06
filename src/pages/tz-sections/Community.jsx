@@ -6,10 +6,10 @@ import { useToast } from '../../components/ui/Toast'
 import { copyText } from '../../utils/clipboard'
 import { communities } from '../../data/site'
 
-const STATE_CHIP = {
-  full: 'chip-muted',
-  open: 'chip-accent',
-  official: 'chip-diamond',
+const STATE_BADGE = {
+  full: 'status-badge--full',
+  open: 'status-badge--open',
+  official: 'status-badge--official',
 }
 
 export default function Community() {
@@ -43,15 +43,13 @@ export default function Community() {
               className="reveal card card-hover flex flex-col gap-3 p-5"
               style={{ transitionDelay: `${index * 70}ms` }}
             >
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex min-w-0 items-center gap-2.5">
-                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-[10px] bg-line/[0.05] dark:bg-white/[0.06]">
-                    <PixelIcon name={item.icon} size={16} />
-                  </span>
-                  <span className="truncate text-[14.5px] font-semibold text-ink">{item.name}</span>
-                </div>
-                <span className={`chip shrink-0 ${STATE_CHIP[item.state]}`}>{item.status}</span>
+              <div className="flex min-w-0 items-center gap-2.5 pr-[74px]">
+                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-[10px] bg-line/[0.05] dark:bg-white/[0.06]">
+                  <PixelIcon name={item.icon} size={16} />
+                </span>
+                <span className="truncate text-[14.5px] font-semibold text-ink">{item.name}</span>
               </div>
+              <span className={`status-badge ${STATE_BADGE[item.state]}`}>{item.status}</span>
 
               <p className="text-[12.5px] leading-relaxed text-muted">{item.desc}</p>
 

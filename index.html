@@ -11,6 +11,10 @@
     <meta name="theme-color" content="#070b14" media="(prefers-color-scheme: dark)" />
     <!-- 自托管字体（保底：加载失败自动回落系统字体，font-display: swap 不阻塞渲染） -->
     <link rel="preload" as="font" type="font/woff2" href="/fonts/Geist-Variable.woff2" crossorigin>
+    <!-- 标题用等宽字体，提前拉取可以减少首屏标题的字体切换抖动 -->
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/GeistMono-Variable.woff2" crossorigin>
+    <!-- 头像在首屏，命中 LCP，提前请求 -->
+    <link rel="preload" as="image" href="/images/avatar.webp">
     <title>天真SkyerNovie - 个人主页</title>
     <meta name="description" content="天真SkyerNovie 的个人主页：Minecraft 模组实况主，格雷空岛 / 新星工程等整合包实况，每晚 20:00 – 22:00 直播。" />
     <meta name="keywords" content="天真SkyerNovie, Minecraft, 游戏主播, 整合包, 模组, B站" />

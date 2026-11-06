@@ -8,14 +8,14 @@ export default function SectionHeading({ label, title, desc, icon, align = 'left
   const centered = align === 'center'
 
   return (
-    <div className={`${centered ? 'text-center flex flex-col items-center' : ''} ${className}`}>
+    <div className={`reveal ${centered ? 'flex flex-col items-center text-center' : ''} ${className}`}>
       {label ? (
         <span className="section-label">
           {icon ? <PixelIcon name={icon} size={14} /> : null}
           {label}
         </span>
       ) : null}
-      <h2 className="section-title">{title}</h2>
+      <h2 className="section-title display-font">{title}</h2>
       {desc ? <p className={`section-desc ${centered ? 'max-w-xl' : 'max-w-lg'}`}>{desc}</p> : null}
       <div className={`pixel-rule ${centered ? 'mt-6' : 'mt-5'}`} />
     </div>

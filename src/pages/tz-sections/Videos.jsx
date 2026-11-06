@@ -4,12 +4,14 @@ import PixelIcon from '../../components/ui/PixelIcon'
 import { moreVideosUrl, videos } from '../../data/site'
 
 function VideoCard({ item, index }) {
+  const isCollection = item.badge === '合集'
+
   return (
     <a
       href={item.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="reveal card card-hover group block overflow-hidden"
+      className="reveal card group flex flex-col overflow-hidden hover:border-accent/30"
       style={{ transitionDelay: `${Math.min(index, 4) * 70}ms` }}
     >
       <div className="relative aspect-video overflow-hidden">
@@ -23,14 +25,16 @@ function VideoCard({ item, index }) {
           className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]"
         />
         <div
-          className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/5 to-transparent"
+          className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent"
           aria-hidden="true"
         />
 
-        <span className="badge-dark absolute left-3 top-3">{item.badge}</span>
-        <span className="badge-dark num absolute bottom-3 right-3">
-          <FiPlay size={10} aria-hidden="true" />
-          {item.views}
+        <span
+          className={`absolute left-3 top-3 inline-flex h-6 items-center rounded-lg px-2.5 text-[11.5px] font-bold backdrop-blur-md ${
+            isCollection ? 'bg-gold text-[#2b1f05]' : 'bg-black/55 text-white'
+          }`}
+        >
+          {item.badge}
         </span>
 
         <span
@@ -43,12 +47,24 @@ function VideoCard({ item, index }) {
         </span>
       </div>
 
-      <div className="p-5">
-        <span className="chip chip-muted">{item.tag}</span>
-        <h3 className="mt-3 line-clamp-2 text-[15px] font-semibold leading-snug text-ink transition-colors group-hover:text-accent">
+      <div className="flex flex-1 flex-col p-5">
+        <span className={`chip ${isCollection ? 'chip-gold' : 'chip-muted'}`}>{item.tag}</span>
+        <h3 className="mt-3 line-clamp-2 min-h-[2.75em] text-[15px] font-semibold leading-snug text-ink transition-colors group-hover:text-accent">
           {item.title}
         </h3>
         <p className="mt-2 line-clamp-2 text-[13px] leading-relaxed text-muted">{item.desc}</p>
+
+        <span className="mt-auto flex items-center justify-between gap-2 pt-4 text-[12px] text-muted">
+          <span className="inline-flex items-center gap-1.5">
+            <FiPlay size={11} aria-hidden="true" />
+            <span className="num">{item.views}</span>
+            次播放
+          </span>
+          <span className="inline-flex items-center gap-1 font-medium transition-colors group-hover:text-accent">
+            观看
+            <FiArrowUpRight size={12} aria-hidden="true" />
+          </span>
+        </span>
       </div>
     </a>
   )

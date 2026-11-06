@@ -191,6 +191,37 @@
     pointer-events: none;
   }
 
+  /* 边框扫光：只给平台卡用，hover 时一道斜向光带沿边框掠过 */
+  .card-sweep::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      115deg,
+      transparent 22%,
+      rgb(var(--accent) / 0.55) 46%,
+      rgb(var(--diamond) / 0.45) 56%,
+      transparent 76%
+    );
+    background-size: 220% 220%;
+    background-position: 135% 50%;
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    opacity: 0;
+    pointer-events: none;
+    transition:
+      opacity 0.35s var(--ease),
+      background-position 0.75s var(--ease);
+  }
+  .card-sweep:hover::after {
+    opacity: 1;
+    background-position: 15% 50%;
+  }
+
   /* ---------- 按钮 ---------- */
   .btn {
     position: relative;
@@ -301,6 +332,12 @@
     background: rgb(var(--line) / 0.06);
     border-color: rgb(var(--line) / 0.09);
   }
+  /* 直播状态：红石色，和主强调的草绿区分开 */
+  .chip-live {
+    color: rgb(var(--redstone));
+    background: rgb(var(--redstone) / 0.1);
+    border-color: rgb(var(--redstone) / 0.26);
+  }
 
   /* 视频卡上的深色角标：不用主题色，保证压在任意缩略图上都可读 */
   .badge-dark {
@@ -318,7 +355,54 @@
     -webkit-backdrop-filter: blur(6px);
   }
 
+  /* 像素风状态徽标：方形硬边 + 实心投影，QQ 群的满员/开放状态用它 */
+  .status-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    display: inline-flex;
+    align-items: center;
+    height: 22px;
+    padding: 0 8px;
+    border: 2px solid transparent;
+    border-radius: 3px;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    line-height: 1;
+    white-space: nowrap;
+    box-shadow: 2px 2px 0 rgb(var(--shadow) / 0.06);
+  }
+  .status-badge--full {
+    color: rgb(var(--muted));
+    border-color: rgb(var(--line) / 0.22);
+    background: rgb(var(--line) / 0.04);
+  }
+  .status-badge--open {
+    color: rgb(var(--accent));
+    border-color: rgb(var(--accent) / 0.42);
+    background: rgb(var(--accent) / 0.12);
+  }
+  .status-badge--official {
+    color: rgb(var(--diamond));
+    border-color: rgb(var(--diamond) / 0.4);
+    background: rgb(var(--diamond) / 0.12);
+  }
+
   /* ---------- 排版 ---------- */
+  /* 显示字体：标题类统一走等宽 Geist Mono，和正文的 Geist 拉开层级
+     中文字符仍走苹方/雅黑，避免落到宋体等老式等宽字体 */
+  .display-font {
+    font-family: 'Geist Mono', ui-monospace, SFMono-Regular, Consolas, 'PingFang SC',
+      'Microsoft YaHei', monospace;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+  /* 像素块投影：硬边、无模糊，比渐变文字更像游戏标题 */
+  .hero-title-shadow {
+    text-shadow: 2px 2px 0 rgb(var(--ink) / 0.12);
+  }
+
   .num {
     font-family: 'Geist Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
     font-variant-numeric: tabular-nums;
@@ -340,13 +424,16 @@
     font-size: clamp(23px, 3.2vw, 31px);
     font-weight: 700;
     letter-spacing: -0.02em;
+    line-height: 1.25;
     color: rgb(var(--ink));
+    text-wrap: balance;
   }
   .section-desc {
     margin-top: 10px;
     font-size: 14.5px;
     line-height: 1.75;
     color: rgb(var(--muted));
+    text-wrap: pretty;
   }
   .pixel-rule {
     width: 92px;
@@ -443,15 +530,25 @@
   /* ---------- 动效 ---------- */
   .reveal {
     opacity: 0;
-    transform: translateY(18px);
+    transform: translateY(14px);
     transition:
-      opacity 0.6s var(--ease),
-      transform 0.6s var(--ease);
+      opacity 0.68s var(--ease),
+      transform 0.68s var(--ease);
     will-change: opacity, transform;
   }
   .reveal.is-in {
     opacity: 1;
     transform: none;
+  }
+
+  /* 首屏级联：父级 .reveal 进入视口后，子元素按 --step 依次入场，只播一次 */
+  .hero-step {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  .reveal.is-in .hero-step {
+    animation: hero-step-in 0.62s var(--ease) both;
+    animation-delay: var(--step, 0ms);
   }
 
   .loading-block {
@@ -484,6 +581,17 @@
   }
 
   .skip-link:focus-visible {
+    transform: none;
+  }
+}
+
+@keyframes hero-step-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
     transform: none;
   }
 }
@@ -566,6 +674,12 @@
     scroll-behavior: auto;
   }
   .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  /* 级联动画的延迟也要清掉，否则元素会先空等一段时间再出现 */
+  .hero-step {
+    animation: none !important;
     opacity: 1 !important;
     transform: none !important;
   }
