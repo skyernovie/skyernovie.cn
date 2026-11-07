@@ -124,8 +124,6 @@ export const featuredVideo = {
   duration: '8 小时 39 分',
 }
 
-export const moreVideosUrl = 'https://space.bilibili.com/25770857'
-
 export const platforms = [
   {
     key: 'mcmod',
