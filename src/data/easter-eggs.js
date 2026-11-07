@@ -6,4 +6,5 @@
 export const easterEggs = [
   '双仓升压',
   '天真是gay',
+  '天真是区',
 ]

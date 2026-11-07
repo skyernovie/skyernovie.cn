@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useTheme } from '../context/ThemeContext.jsx';
+import { EGG_EVENT } from '../utils/easterEgg';
 
 /*
  * 像素孢子背景：漂浮的小方块，像空气里的经验粒子 / 孢子。
@@ -55,6 +56,8 @@ export default function ParticleBackground() {
   const particlesRef = useRef([]);
   const starsRef = useRef([]);
   const nextStarRef = useRef(0);
+  /* 彩蛋触发的流星串：存待生成的时间点，逐颗放出来 */
+  const burstRef = useRef([]);
   const frameRef = useRef(null);
   const runningRef = useRef(false);
   const { resolvedTheme } = useTheme();
@@ -103,6 +106,28 @@ export default function ParticleBackground() {
     const count = coarse ? 28 : Math.min(Math.round((width * height) / 26000), 72);
     particlesRef.current = Array.from({ length: count }, () => new Particle(width, height));
 
+    /*
+     * 流星：只在深色夜空出现。三色粒子（白 / 草绿 / 钻石青），尾迹更长、带像素光晕，
+     * 基础频率比之前更密；彩蛋触发时再从 burstRef 里成串放出来。
+     */
+    const STAR_TINTS = ['233, 238, 247', '164, 240, 176', '132, 236, 226'];
+
+    const spawnMeteor = (boost = 1) => {
+      if (starsRef.current.length >= 30) return;
+      const roll = Math.random();
+      starsRef.current.push({
+        x: width * 0.18 + Math.random() * width * 0.78,
+        y: Math.random() * height * 0.35,
+        vx: -(4.2 + Math.random() * 3.2) * boost,
+        vy: (2.2 + Math.random() * 2) * boost,
+        life: 0,
+        max: 60 + Math.random() * 30,
+        tail: 20 + Math.random() * 12,
+        lineWidth: 1.6 + Math.random() * 0.8,
+        tint: roll < 0.55 ? STAR_TINTS[0] : roll < 0.8 ? STAR_TINTS[1] : STAR_TINTS[2],
+      });
+    };
+
     const draw = (time) => {
       ctx.clearRect(0, 0, width, height);
       const alpha = alphaRef.current;
@@ -115,18 +140,17 @@ export default function ParticleBackground() {
         ctx.fillRect(p.x, p.y, p.size, p.size);
       }
 
-      // 流星：只在深色夜空出现，每 5–14 秒一颗，划过左上到右下，带渐隐尾迹
       if (darkRef.current) {
         if (time > nextStarRef.current) {
-          nextStarRef.current = time + 5000 + Math.random() * 9000;
-          starsRef.current.push({
-            x: width * 0.25 + Math.random() * width * 0.7,
-            y: Math.random() * height * 0.35,
-            vx: -(3.5 + Math.random() * 2.5),
-            vy: 2 + Math.random() * 1.6,
-            life: 0,
-            max: 55 + Math.random() * 25,
-          });
+          nextStarRef.current = time + 2200 + Math.random() * 5000;
+          spawnMeteor();
+          if (Math.random() < 0.35) spawnMeteor();
+        }
+
+        /* 彩蛋流星串：时间到了就放一颗 */
+        while (burstRef.current.length && burstRef.current[0] <= time) {
+          burstRef.current.shift();
+          spawnMeteor(1.35);
         }
 
         const stars = starsRef.current;
@@ -141,21 +165,27 @@ export default function ParticleBackground() {
           }
           // 正弦包络：淡入再淡出，不会突然出现/消失
           const fade = Math.sin((s.life / s.max) * Math.PI);
-          const tailX = s.x - s.vx * 16;
-          const tailY = s.y - s.vy * 16;
+          const tailX = s.x - s.vx * s.tail;
+          const tailY = s.y - s.vy * s.tail;
           const grad = ctx.createLinearGradient(s.x, s.y, tailX, tailY);
-          grad.addColorStop(0, `rgba(233, 238, 247, ${(0.75 * fade).toFixed(3)})`);
-          grad.addColorStop(1, 'rgba(233, 238, 247, 0)');
+          grad.addColorStop(0, `rgba(${s.tint}, ${(0.9 * fade).toFixed(3)})`);
+          grad.addColorStop(0.45, `rgba(${s.tint}, ${(0.32 * fade).toFixed(3)})`);
+          grad.addColorStop(1, `rgba(${s.tint}, 0)`);
           ctx.strokeStyle = grad;
-          ctx.lineWidth = 1.4;
+          ctx.lineWidth = s.lineWidth;
           ctx.beginPath();
           ctx.moveTo(s.x, s.y);
           ctx.lineTo(tailX, tailY);
           ctx.stroke();
+          // 光晕：叠一个半透明方块，比 shadowBlur 便宜
+          ctx.fillStyle = `rgba(${s.tint}, ${(0.14 * fade).toFixed(3)})`;
+          ctx.fillRect(s.x - 3.5, s.y - 3.5, 7, 7);
           // 星头是一颗小方块，呼应整体像素语言
-          ctx.fillStyle = `rgba(255, 255, 255, ${(0.9 * fade).toFixed(3)})`;
-          ctx.fillRect(s.x - 1, s.y - 1, 2.5, 2.5);
+          ctx.fillStyle = `rgba(255, 255, 255, ${(0.95 * fade).toFixed(3)})`;
+          ctx.fillRect(s.x - 1, s.y - 1, 3, 3);
         }
+      } else {
+        burstRef.current.length = 0;
       }
     };
 
@@ -196,14 +226,26 @@ export default function ParticleBackground() {
       else start();
     };
 
+    /* 彩蛋触发：排 8 颗流星，每隔 90ms 放一颗，形成一小串 */
+    const handleEggBurst = () => {
+      if (!darkRef.current) return;
+      const now = performance.now();
+      for (let i = 0; i < 8; i += 1) {
+        burstRef.current.push(now + i * 90);
+      }
+    };
+
     window.addEventListener('resize', handleResize);
+    window.addEventListener(EGG_EVENT, handleEggBurst);
     document.addEventListener('visibilitychange', handleVisibility);
     motionQuery?.addEventListener?.('change', handleMotionChange);
 
     return () => {
       stop();
       if (resizeTimer) clearTimeout(resizeTimer);
+      burstRef.current.length = 0;
       window.removeEventListener('resize', handleResize);
+      window.removeEventListener(EGG_EVENT, handleEggBurst);
       document.removeEventListener('visibilitychange', handleVisibility);
       motionQuery?.removeEventListener?.('change', handleMotionChange);
     };

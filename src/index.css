@@ -892,6 +892,12 @@
     background: inherit;
     border-radius: 1px;
   }
+
+  /* 点赞按钮上的彩蛋气泡：挂在按钮正上方，箭头仍指向按钮 */
+  .egg-bubble--above {
+    top: auto;
+    bottom: calc(100% + 12px);
+  }
 }
 
 @keyframes hero-step-in {

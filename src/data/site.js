@@ -62,17 +62,6 @@ export const stats = [
 
 export const videos = [
   {
-    key: 'ep1',
-    tag: '格雷科技',
-    badge: '完结',
-    title: '蒸汽合金炉合出创造能源？开启AE2！格雷空岛爽包',
-    desc: '格雷科技空岛整合包实况，蒸汽合金炉开启创造能源，全面启动 AE2 自动化！',
-    image: '/images/video1.webp',
-    url: 'https://www.bilibili.com/video/BV1mdCTBgEjZ',
-    views: '16.0万',
-    tone: 'accent',
-  },
-  {
     key: 'ep2',
     tag: '模块化',
     badge: '完结',
@@ -119,6 +108,21 @@ export const videos = [
     collection: true,
   },
 ]
+
+/*
+ * 站长最喜欢的一集：用 B 站官方嵌入式播放器直接在视频区播放。
+ * embed 是 B 站官方 iframe 地址（把协议写成 https://，避免本地 http 预览时被混合内容拦截）。
+ */
+export const featuredVideo = {
+  title: '一口气看完格雷空岛爽包系列（蒸汽时代 - 创造箱子）',
+  desc: '站长私心最喜欢的一集：一口气看完格雷空岛爽包全流程，从蒸汽时代一路做到创造箱子。',
+  url: 'https://www.bilibili.com/video/BV1Z6XZBREcv',
+  cover: '/images/featured.jpg',
+  embed:
+    'https://player.bilibili.com/player.html?isOutside=true&aid=116334121719023&bvid=BV1Z6XZBREcv&cid=37170253622&p=1',
+  views: '30.4万',
+  duration: '8 小时 39 分',
+}
 
 export const moreVideosUrl = 'https://space.bilibili.com/25770857'
 

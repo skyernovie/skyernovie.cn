@@ -3,7 +3,7 @@ import { FiArrowUpRight } from 'react-icons/fi'
 import Button from '../../components/ui/Button'
 import PixelIcon from '../../components/ui/PixelIcon'
 import { profile } from '../../data/site'
-import { easterEggs } from '../../data/easter-eggs'
+import { burstMeteors, pickEasterEgg } from '../../utils/easterEgg'
 import { gsap } from '../../utils/gsap'
 import { bindMagnetic } from '../../utils/magnetic'
 import TdButton from './TdButton'
@@ -138,7 +138,6 @@ export default function Hero() {
   const boopTimer = useRef(0)
   const eggTimer = useRef(0)
   const eggId = useRef(0)
-  const poolRef = useRef([])
 
   const handleBoop = () => {
     window.clearTimeout(boopTimer.current)
@@ -147,15 +146,14 @@ export default function Hero() {
     setBooping(true)
     boopTimer.current = window.setTimeout(() => setBooping(false), 460)
 
-    if (poolRef.current.length === 0) {
-      poolRef.current = [...easterEggs].sort(() => Math.random() - 0.5)
-    }
-    const text = poolRef.current.pop()
+    const text = pickEasterEgg()
     const id = ++eggId.current
     setEgg({ id, text })
     eggTimer.current = window.setTimeout(() => {
       setEgg((cur) => (cur && cur.id === id ? null : cur))
     }, 1680)
+
+    burstMeteors()
   }
 
   /*
