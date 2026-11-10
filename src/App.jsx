@@ -51,6 +51,18 @@ function RevealFailsafe() {
   return null
 }
 
+/*
+ * /GTLEnhanced 是 public 下的独立静态页（public/GTLEnhanced/index.html）。
+ * 线上静态托管会自动补上结尾斜杠，但本地 vite dev / preview 不会，会落到 SPA 的 404，
+ * 所以这里兜底做一次整页跳转，交给静态文件处理。
+ */
+function StaticPageRedirect({ to }) {
+  useEffect(() => {
+    window.location.replace(to)
+  }, [to])
+  return <Loading />
+}
+
 export default function App() {
   return (
     <HelmetProvider>
@@ -75,6 +87,8 @@ export default function App() {
                   <Route path="/" element={<TzXyz />} />
                   {/* 旧地址 /tz 直接跳回主页 */}
                   <Route path="/tz" element={<Navigate to="/" replace />} />
+                  {/* 独立的 GTL 增强版介绍页，走静态文件 */}
+                  <Route path="/GTLEnhanced" element={<StaticPageRedirect to="/GTLEnhanced/" />} />
                   <Route path="*" element={<NotFound title="页面未找到" backTo="/" backLabel="返回主页" />} />
                 </Routes>
               </Suspense>

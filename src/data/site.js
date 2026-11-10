@@ -240,3 +240,14 @@ export const repo = {
   email: 'ZHCOOL520@qq.com',
 }
 
+/*
+ * 页面推荐：指向 public/GTLEnhanced/index.html 的独立静态页。
+ * 这一页由另一位作者制作，设计与本站不同，跳转走静态文件而不是 SPA 路由。
+ */
+export const recommendation = {
+  title: 'GTL 增强核心 · 玩家手册',
+  desc: '独立于本站的 GTL 增强核心玩家手册：查机器、看多方块结构，了解 AE 自动化工具与私人园区。',
+  url: '/GTLEnhanced',
+  icon: FiBookOpen,
+}
+

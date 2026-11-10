@@ -8,6 +8,7 @@ import Videos from './tz-sections/Videos'
 import Platforms from './tz-sections/Platforms'
 import Community from './tz-sections/Community'
 import Contact from './tz-sections/Contact'
+import Recommend from './tz-sections/Recommend'
 
 const SITE = 'https://skyernovie.cn'
 const TITLE = '天真SkyerNovie - 个人主页'
@@ -54,6 +55,7 @@ export default function TzXyz() {
         <Platforms />
         <Community />
         <Contact />
+        <Recommend />
       </div>
     </>
   )
