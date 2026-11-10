@@ -106,6 +106,8 @@ public/
   CNAME  404.html  favicon.ico  fonts/  images/
   GTLEnhanced/            # 独立静态页（不参与 React 构建，原样复制到站点根）
     index.html            # 页面本体（HTML + CSS + 内联脚本）
+    hero-photo.webp       # 首屏大图（外置，避免拖大 HTML）
+    world-*.webp          # 园区默认图（懒加载）
     guide-index.json      # 文稿 / 图标 / 结构元信息 / 纹理图集
     guide-photos.json     # 园区实景照片（滚动到附近才加载）
     models/               # 67 个多方块结构几何，每台机器一个 json
