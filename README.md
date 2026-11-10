@@ -1,6 +1,6 @@
 # skyernovie.cn
 
-天真SkyerNovie 的主站（独立仓库 / 独立域名）。整站只有一个页面：他的个人主页。
+天真SkyerNovie 的主站（独立仓库 / 独立域名）。主站只有一个页面：他的个人主页，底部另有「页面推荐」入口，指向一份独立制作的静态页。
 
 - 线上地址：[https://skyernovie.cn](https://skyernovie.cn)
 - 仓库地址：[https://github.com/skyernovie/skyernovie.cn](https://github.com/skyernovie/skyernovie.cn)
@@ -12,7 +12,8 @@
 
 | 路径 | 内容 |
 | --- | --- |
-| `/` | 天真主页：头像与简介、数据卡片、精选视频（含在线播放器）、整合包平台外链、粉丝社区、联系方式 |
+| `/` | 天真主页：头像与简介、数据卡片、精选视频（含在线播放器）、整合包平台外链、粉丝社区、联系方式、页面推荐 |
+| `/GTLEnhanced` | 独立静态页「GTL 增强核心 · 玩家手册」，由另一位作者制作，设计与本站无关（见下文「GTL 增强核心介绍页」） |
 | `/tz` | 旧地址，直接跳回 `/` |
 | 其它 | 404 页，可一键回主页 |
 
@@ -22,7 +23,7 @@
 
 ```
 Hero（首屏）→ Stats（数据卡片）→ Ticker（跑马灯）→ Videos（视频/合集）
-→ Platforms（整合包平台）→ Community（粉丝社区）→ Contact（联系与开源）
+→ Platforms（整合包平台）→ Community（粉丝社区）→ Contact（联系与开源）→ Recommend（页面推荐）
 ```
 
 ---
@@ -93,7 +94,7 @@ src/
     stats.json            # 粉丝数快照（构建期自动更新，勿手写死）
   pages/
     TzXyz.jsx             # 天真主页（组装各区块）
-    tz-sections/          # Hero / Stats / Videos / Platforms / Community / Contact / TdButton
+    tz-sections/          # Hero / Stats / Videos / Platforms / Community / Contact / Recommend / TdButton
   utils/
     gsap.js               # GSAP 单例与动效偏好判断（reduceMotion / coarsePointer）
     useTilt.js            # 卡片 3D 倾斜
@@ -103,6 +104,11 @@ src/
     clipboard.js          # 复制文本（含降级方案）
 public/
   CNAME  404.html  favicon.ico  fonts/  images/
+  GTLEnhanced/            # 独立静态页（不参与 React 构建，原样复制到站点根）
+    index.html            # 页面本体（HTML + CSS + 内联脚本）
+    guide-index.json      # 文稿 / 图标 / 结构元信息 / 纹理图集
+    guide-photos.json     # 园区实景照片（滚动到附近才加载）
+    models/               # 67 个多方块结构几何，每台机器一个 json
 scripts/
   fetch-stats.mjs         # 抓取 B 站粉丝数
 ```
@@ -126,6 +132,7 @@ scripts/
 | `communities` | 粉丝社区（QQ 群 / QQ 频道，含满员状态） |
 | `contacts` | 联系方式（B 站 / QQ） |
 | `repo` | 仓库信息与联系邮箱 |
+| `recommendation` | 「页面推荐」卡片：标题、简介、跳转地址、图标 |
 
 ### 常见修改场景
 
@@ -237,7 +244,37 @@ GitHub Pages 是静态托管，深链接刷新会 404。本项目用「404 中�
 | --- | --- | --- |
 | `/` | `TzXyz`（懒加载） | 主页 |
 | `/tz` | `Navigate → /` | 旧地址重定向 |
+| `/GTLEnhanced` | `StaticPageRedirect → /GTLEnhanced/` | 独立静态页兜底跳转（线上由目录 `index.html` 直接命中） |
 | `*` | `NotFound` | 404 页 |
+
+---
+
+## GTL 增强核心介绍页
+
+`/GTLEnhanced` 是一份**独立静态页**（GTL 增强核心 · 玩家手册），由另一位作者制作，设计语言和文案都与本站无关。本站只负责在主页底部「页面推荐」分栏给出入口：
+
+- 卡片文案在 [`src/data/site.js`](src/data/site.js) 的 `recommendation`；
+- 分栏组件为 [`Recommend.jsx`](src/pages/tz-sections/Recommend.jsx)，以整页跳转方式打开；
+- 页面本体放在 `public/GTLEnhanced/`，构建时原样复制到 `dist/GTLEnhanced/`，**不经过 React / Vite 打包**。
+
+### 数据拆分
+
+原始版本是 16.8 MB 的单文件（内联 JSON 占 16.29 MB），部署到 GitHub Pages 后首屏需要等 12.5 MB（gzip）下载完才渲染，表现为大量骨架和加载动画长时间转圈。现已拆分为：
+
+| 文件 | 体积 | 加载时机 |
+| --- | --- | --- |
+| `index.html` | ≈0.5 MB | 立即 |
+| `guide-index.json` | ≈0.74 MB | 立即（文稿、图标、结构元信息、纹理图集） |
+| `guide-photos.json` | ≈2.2 MB | 滚动到「私人园区」附近时加载 |
+| `models/<结构名>.json` | 单个 0.1–1.2 MB | 选中某台机器 / 首屏结构时按需加载 |
+
+页面内的对应逻辑：主脚本改为异步 `fetch('guide-index.json')` 引导；`StructureViewer.setModel` 在缺少 `quads` 时拉取 `models/<结构名>.json`（文件名规则：`key.replace(/[^a-zA-Z0-9_-]/g, '_') + '.json'`）；园区照片用 `IntersectionObserver` 懒加载。
+
+### 修改注意
+
+- 改文案直接改 `index.html` 里的静态标记，或 `guide-index.json` 内的字段；
+- 新增结构时，需要同时补 `guide-index.json` 中 `models.models` 的元信息（`size` / `quadCount` / `blockCount` / `surfaceArea`）和对应的 `models/*.json`（`quads` 为 gzip 数据的 base64）；
+- **不要把数据重新内联回 `index.html`**，否则会退回单文件、首屏再次变慢。
 
 ---
 
