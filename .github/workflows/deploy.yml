@@ -4,9 +4,12 @@ on:
   push:
     branches: [ master ]
   workflow_dispatch:
+  schedule:
+    # 每天北京时间 06:00 自动刷新粉丝数（cron 使用 UTC）
+    - cron: '0 22 * * *'
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -16,6 +19,8 @@ concurrency:
 
 jobs:
   build:
+    # 回写快照产生的提交带 [skip ci]，避免再次触发部署形成循环
+    if: github.event_name != 'push' || !contains(github.event.head_commit.message || '', '[skip ci]')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -34,6 +39,20 @@ jobs:
       - name: Sync Bilibili stats
         run: npm run sync:stats
         continue-on-error: true
+
+      # 把新快照提交回仓库，保证下次构建（以及本地开发）也能拿到最新值
+      - name: Commit stats snapshot
+        continue-on-error: true
+        run: |
+          if git diff --quiet -- src/data/stats.json; then
+            echo "stats.json 无变化，跳过提交"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/data/stats.json
+          git commit -m "chore(stats): 同步 B 站粉丝数快照 [skip ci]"
+          git push origin HEAD:master
 
       - name: Build
         run: npm run build 2>&1

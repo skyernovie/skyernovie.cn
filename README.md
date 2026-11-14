@@ -196,7 +196,7 @@ scripts/
 }
 ```
 
-[`scripts/fetch-stats.mjs`](scripts/fetch-stats.mjs) 负责抓取：
+[`scripts/fetch-stats.mjs`](scripts/fetch-stats.mjs) 负责抓取；GitHub Actions 每天北京时间 06:00 会定时部署一次，抓取成功后还会把快照提交回仓库：
 
 1. 请求 `https://api.bilibili.com/x/relation/stat?vmid=25770857`（带 UA / Referer，15 秒超时）；
 2. 校验响应，失败则**保留旧值**并以退出码 0 结束（不阻断部署）；
